@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guardian Training Record ‚Äî Good Shepherd Catholic Community</title>
+<title>Guardian Training Record ‚ Good Shepherd Catholic Community</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -208,7 +208,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
         </div>
         <div class="preview" id="pv">
           <div class="pv-top">
-            <span class="pv-pts" id="pvPts">‚Äî</span>
+            <span class="pv-pts" id="pvPts">‚</span>
             <span class="pv-cat" id="pvCat" style="color:var(--mute)">Points award</span>
           </div>
           <div class="pv-note" id="pvNote">Choose an activity and its point value appears here.</div>
@@ -302,7 +302,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
     <p class="sub">Enter the coordinator code to open the command dashboard.</p>
     <div class="field"><label for="pin">Access code</label><input type="password" id="pin" autocomplete="off"></div>
     <button class="btn" id="btnPin">Open dashboard</button>
-    <p class="hint" style="margin-top:12px">This code hides the dashboard from casual view. It is not a substitute for real security ‚Äî see the deployment notes.</p>
+    <p class="hint" style="margin-top:12px">This code hides the dashboard from casual view. It is not a substitute for real security ‚ see the deployment notes.</p>
   </div>
 
   <div id="cmdBody" style="display:none">
@@ -338,7 +338,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
 
     <div class="card">
       <h2>Roster</h2>
-      <p class="sub">Add members, set service dates, and retire members. Nothing is erased ‚Äî retired members keep their record and stay on the years they served.</p>
+      <p class="sub">Add members, set service dates, and retire members. Nothing is erased ‚ retired members keep their record and stay on the years they served.</p>
       <div class="toolbar">
         <input type="text" id="newName" class="grow" placeholder="Last, First">
         <input type="text" id="newRole" style="width:160px" placeholder="Role (e.g. ART)">
@@ -346,7 +346,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
         <button class="btn sm" id="btnAddMember">Add guardian</button>
       </div>
       <div id="rosterTable"></div>
-      <p class="hint">Leave a start date blank for members who have served since before the tracking years on file ‚Äî they are measured against the full annual standard.</p>
+      <p class="hint">Leave a start date blank for members who have served since before the tracking years on file ‚ they are measured against the full annual standard.</p>
     </div>
 
     <div class="card">
@@ -366,8 +366,8 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
           <div class="field">
             <label for="enforce">Cap handling</label>
             <select id="enforce">
-              <option value="1">Enforce caps ‚Äî points above the cap do not count</option>
-              <option value="0">Flag only ‚Äî count everything, mark it for review</option>
+              <option value="1">Enforce caps ‚ points above the cap do not count</option>
+              <option value="0">Flag only ‚ count everything, mark it for review</option>
             </select>
           </div>
           <div class="field">
@@ -385,7 +385,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
         <button class="btn ghost sm" id="btnSample">Load sample entries</button>
         <button class="btn danger sm" id="btnWipe">Delete entries for <span id="wipeYr"></span></button>
       </div>
-      <p class="hint">Sample entries are for demonstration. Delete them before the team starts logging real training. Deleting a year removes only that year's entries ‚Äî the roster and every other year stay intact.</p>
+      <p class="hint">Sample entries are for demonstration. Delete them before the team starts logging real training. Deleting a year removes only that year's entries ‚ the roster and every other year stay intact.</p>
     </div>
   </div>
 </section>
@@ -394,7 +394,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
 
 <script>
 /* =====================================================================
-   CONFIGURATION ‚Äî edit these before you deploy
+   CONFIGURATION ‚ edit these before you deploy
    ===================================================================== */
 const CONFIG = {
   accessCode : "GSCC2026!",
@@ -489,7 +489,7 @@ const DAY=86400000;
 const utc=s=>{const[y,m,d]=String(s).split("-").map(Number);return Date.UTC(y,m-1,d);};
 const iso=ms=>new Date(ms).toISOString().slice(0,10);
 const today=()=>new Date().toISOString().slice(0,10);
-const pretty=d=>{if(!d)return"‚Äî";const[y,m,dd]=String(d).split("-");return `${+m}/${+dd}/${y}`;};
+const pretty=d=>{if(!d)return"‚";const[y,m,dd]=String(d).split("-");return `${+m}/${+dd}/${y}`;};
 const shortD=d=>{if(!d)return"";const[y,m,dd]=String(d).split("-");
   return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m-1]+" "+(+dd);};
 
@@ -516,12 +516,12 @@ function targetFor(cat,m,year){
 }
 function serviceLabel(m,year){
   const sv=service(m,year);
-  if(!sv.served) return "‚Äî";
+  if(!sv.served) return "‚";
   if(!sv.partial) return "Full year";
   const a=sv.startedMid?shortD(sv.from):"Jan 1", b=sv.endedMid?shortD(sv.to):"Dec 31";
   return `${a} ‚Äì ${b}`;
 }
-const memberOf=n=>S.roster.find(m=>m.name===n)||{name:n,role:"‚Äî",start:null,end:null};
+const memberOf=n=>S.roster.find(m=>m.name===n)||{name:n,role:"‚",start:null,end:null};
 const servedIn=year=>S.roster.filter(m=>service(m,year).served);
 const isCurrent=m=>!m.end;
 
@@ -597,7 +597,7 @@ function fillSelects(){
   const act=$("#fActivity"),cur=act.value;
   act.innerHTML=`<option value="">Select an activity‚Ä¶</option>`+ORDER.map(c=>
     `<optgroup label="${CATS[c].label}${CATS[c].required?"":" (bonus)"}">`+
-    CATALOG.filter(a=>a.cat===c).map(a=>`<option value="${a.id}">${esc(a.name)} ‚Äî ${fmt(a.pts)} pt${a.pts===1?"":"s"}</option>`).join("")+
+    CATALOG.filter(a=>a.cat===c).map(a=>`<option value="${a.id}">${esc(a.name)} ‚ ${fmt(a.pts)} pt${a.pts===1?"":"s"}</option>`).join("")+
     `</optgroup>`).join("");
   act.value=cur;
   const ys=$("#yearSel");
@@ -608,7 +608,7 @@ function fillSelects(){
 function renderPreview(){
   const a=item($("#fActivity").value),pv=$("#pv");
   if(!a){pv.classList.remove("set");
-    $("#pvPts").textContent="‚Äî";$("#pvPts").style.color="";
+    $("#pvPts").textContent="‚";$("#pvPts").style.color="";
     $("#pvCat").textContent="Points award";$("#pvCat").style.color="var(--mute)";
     $("#pvNote").textContent="Choose an activity and its point value appears here.";}
   else{
@@ -698,7 +698,7 @@ function guardianDetailHTML(s,admin){
       <td style="color:${CATS[r.cat].color};font-weight:600">${CATS[r.cat].short}</td>
       <td class="num">${fmt(r.pts)}</td><td class="num ${r.capped?'under':''}">${fmt(r.credit)}</td>
       <td>${r.proof?`<a href="${esc(r.proof)}" target="_blank" rel="noopener">View</a>`:`<span style="color:var(--warn)">Missing</span>`}</td>
-      <td><span class="short" title="${esc(r.notes)}">${esc(r.notes||"‚Äî")}</span></td>
+      <td><span class="short" title="${esc(r.notes)}">${esc(r.notes||"‚")}</span></td>
       ${admin?`<td><button class="btn ghost sm" data-del="${r.id}">Delete</button></td>`:''}
     </tr>`).join("")+`</tbody></table></div>`
     :`<div class="empty">No entries recorded for ${s.year}.</div>`;
@@ -792,13 +792,13 @@ function renderCommand(){
       `<td class="num">${fmt(d.counted.Team)}</td><td class="num">${fmt(d.counted.Diocese)}</td>
       <td class="num"><b>${fmt(d.total)}</b></td>
       <td>${d.met?`<span class="pill ok">Met</span>`:`<span class="pill prog">Review</span>`}</td>
-      <td class="num">${d.overCap||"‚Äî"}</td><td class="num">${d.noProof||"‚Äî"}</td><td class="num">${d.count}</td>
+      <td class="num">${d.overCap||"‚"}</td><td class="num">${d.noProof||"‚"}</td><td class="num">${d.count}</td>
       <td class="mono">${pretty(d.last)}</td></tr>`).join("")+`</tbody></table></div>`
     :`<div class="empty">No guardians match this filter.</div>`;
 
   $("#proNote").textContent=S.prorate
     ? `Targets shown after the slash are prorated by days on the roster and rounded to the nearest half point. Full-year members carry the full ${S.targets.Combat}/${S.targets.Security}/${S.targets.Spiritual} standard.`
-    : `Proration is off ‚Äî every member is held to the full ${S.targets.Combat}/${S.targets.Security}/${S.targets.Spiritual} standard regardless of start date.`;
+    : `Proration is off ‚ every member is held to the full ${S.targets.Combat}/${S.targets.Security}/${S.targets.Spiritual} standard regardless of start date.`;
 
   const log=S.entries.filter(e=>yearOf(e.date)===S.year).sort((a,b)=>b.date.localeCompare(a.date));
   $("#logSub").textContent=`${log.length} ${log.length===1?"entry":"entries"} recorded in ${S.year}.`;
@@ -810,7 +810,7 @@ function renderCommand(){
       <td style="color:${CATS[e.cat]?CATS[e.cat].color:"var(--slate)"};font-weight:600">${CATS[e.cat]?CATS[e.cat].short:esc(e.cat)}</td>
       <td class="num">${fmt(e.pts)}</td>
       <td>${e.proof?`<a href="${esc(e.proof)}" target="_blank" rel="noopener">View</a>`:`<span style="color:var(--warn)">Missing</span>`}</td>
-      <td><span class="short" title="${esc(e.notes)}">${esc(e.notes||"‚Äî")}</span></td>
+      <td><span class="short" title="${esc(e.notes)}">${esc(e.notes||"‚")}</span></td>
       <td><button class="btn ghost sm" data-del="${e.id}">Delete</button></td></tr>`).join("")+
     `</tbody></table></div>`:`<div class="empty">No training recorded for ${S.year} yet.</div>`;
 
@@ -991,7 +991,7 @@ document.addEventListener("click",async e=>{
 
 document.addEventListener("change",async e=>{
   const t=e.target;
-  if(t.dataset.role!==undefined){S.roster[+t.dataset.role].role=t.value.trim()||"‚Äî";await Store.save();refresh();return;}
+  if(t.dataset.role!==undefined){S.roster[+t.dataset.role].role=t.value.trim()||"‚";await Store.save();refresh();return;}
   if(t.dataset.start!==undefined){S.roster[+t.dataset.start].start=t.value||null;await Store.save();
     toast("Service start updated. Targets recalculated.");refresh();return;}
   if(t.dataset.end!==undefined){S.roster[+t.dataset.end].end=t.value||null;await Store.save();
@@ -1069,4 +1069,5 @@ function migrate(saved){
 </script>
 </body>
 </html>
+
 
