@@ -200,11 +200,11 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
         <p class="sub">Pick your name and what you did. Points fill in automatically.</p>
         <div class="field">
           <label for="fGuardian">Guardian</label>
-          <select id="fGuardian"><option value="">Select your name‚Ä¶</option></select>
+          <select id="fGuardian"><option value="">Select your name</option></select>
         </div>
         <div class="field">
           <label for="fActivity">Training activity</label>
-          <select id="fActivity"><option value="">Select an activity‚Ä¶</option></select>
+          <select id="fActivity"><option value="">Select an activity</option></select>
         </div>
         <div class="preview" id="pv">
           <div class="pv-top">
@@ -221,7 +221,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
           </div>
           <div class="field">
             <label for="fProof">Proof or documentation link</label>
-            <input type="url" id="fProof" placeholder="https://‚Ä¶ (optional)">
+            <input type="url" id="fProof" placeholder="https:// (optional)">
             <div class="hint">Certificate, photo, or scorecard link.</div>
           </div>
         </div>
@@ -282,7 +282,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
     <p class="sub">Your full activity log for the selected year, plus prior years on file.</p>
     <div class="field" style="max-width:340px">
       <label for="meGuardian">Guardian</label>
-      <select id="meGuardian"><option value="">Select your name‚Ä¶</option></select>
+      <select id="meGuardian"><option value="">Select your name</option></select>
     </div>
     <div id="meBody"></div>
   </div>
@@ -312,7 +312,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
       <h2>Command dashboard</h2>
       <p class="sub" id="cmdSub"></p>
       <div class="toolbar">
-        <div class="grow"><input type="text" id="cmdSearch" placeholder="Search name or role‚Ä¶"></div>
+        <div class="grow"><input type="text" id="cmdSearch" placeholder="Search name or role"></div>
         <select id="cmdFilter" style="width:auto">
           <option value="all">Everyone who served this year</option>
           <option value="current">Current members only</option>
@@ -590,12 +590,12 @@ function fillSelects(){
   const names=servedIn(S.year).map(m=>m.name).sort((a,b)=>a.localeCompare(b));
   ["#fGuardian","#meGuardian"].forEach(sel=>{
     const el=$(sel),cur=el.value;
-    el.innerHTML=`<option value="">Select your name‚Ä¶</option>`+names.map(n=>{
+    el.innerHTML=`<option value="">Select your name</option>`+names.map(n=>{
       const m=memberOf(n); return `<option>${esc(n)}</option>`;}).join("");
     if(names.includes(cur)) el.value=cur;
   });
   const act=$("#fActivity"),cur=act.value;
-  act.innerHTML=`<option value="">Select an activity‚Ä¶</option>`+ORDER.map(c=>
+  act.innerHTML=`<option value="">Select an activity</option>`+ORDER.map(c=>
     `<optgroup label="${CATS[c].label}${CATS[c].required?"":" (bonus)"}">`+
     CATALOG.filter(a=>a.cat===c).map(a=>`<option value="${a.id}">${esc(a.name)} ‚ ${fmt(a.pts)} pt${a.pts===1?"":"s"}</option>`).join("")+
     `</optgroup>`).join("");
