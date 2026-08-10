@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guardian Training Record ‚Äî Good Shepherd Catholic Community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --navy:#0E2B41;
+  --ink:#12293A;
+  --blue:#1C75BC;
+  --cyan:#29A9E0;
+  --teal:#17607D;
+  --slate:#48606F;
+  --mute:#7A8E9B;
+  --line:#D5DEE4;
+  --paper:#F2F6F8;
+  --card:#FFFFFF;
+  --combat:#0F3E5E;
+  --security:#1C75BC;
+  --spiritual:#2FA3D6;
+  --team:#2E8B96;
+  --diocese:#6A7F99;
+  --ok:#1F7A55;
+  --warn:#A85E12;
+  --alert:#B03A3A;
+  --focus:#1C75BC;
+  --r:4px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font:400 15px/1.55 "Public Sans",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Barlow Semi Condensed",system-ui,sans-serif;font-weight:600;letter-spacing:.005em;margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+a{color:var(--blue)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.masthead{background:var(--navy);color:#E8F1F6;border-bottom:3px solid var(--cyan)}
+.mast-in{max-width:1240px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.crest{width:31px;height:35px;flex:none}
+.mast-t{font-family:"Barlow Semi Condensed",sans-serif;font-size:20px;font-weight:600;line-height:1.1;letter-spacing:.06em;text-transform:uppercase}
+.mast-s{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8FAEC2;margin-top:2px}
+.mast-yr{margin-left:auto;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#8FAEC2;display:flex;align-items:center;gap:8px}
+.mast-yr select{background:#17394F;border:1px solid #2C536C;color:#E8F1F6;border-radius:var(--r);padding:5px 8px;font-size:12px;letter-spacing:0}
+nav.tabs{background:#123853;border-bottom:1px solid #1D4A67}
+.tabs-in{max-width:1240px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;color:#8FAEC2;padding:11px 16px;cursor:pointer;font-size:13.5px;font-weight:600;white-space:nowrap}
+.tab:hover{color:#fff}
+.tab[aria-selected="true"]{color:#fff;border-bottom-color:var(--cyan)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:24px 20px 72px}
+.panel{display:none}
+.panel.on{display:block}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.card+.card{margin-top:16px}
+.card h2{font-size:19px;margin-bottom:3px;color:var(--teal)}
+.card .sub{font-size:13px;color:var(--mute);margin-bottom:16px}
+.eyebrow{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:700}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 376px;gap:16px;align-items:start}
+@media (max-width:920px){.cols{grid-template-columns:1fr}}
+
+.field{margin-bottom:14px}
+label{display:block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--slate);margin-bottom:5px}
+input[type=text],input[type=date],input[type=url],input[type=password],select,textarea{
+  width:100%;padding:9px 10px;border:1px solid #B9C8D2;border-radius:var(--r);background:#fff}
+input[type=date]{min-height:38px}
+select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0h10L5 6z' fill='%2348606F'/></svg>");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+textarea{min-height:62px;resize:vertical}
+.hint{font-size:12px;color:var(--mute);margin-top:4px}
+.hint.warn{color:var(--warn);font-weight:600}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.row2{grid-template-columns:1fr}}
+
+.btn{background:var(--blue);color:#fff;border:1px solid var(--blue);border-radius:var(--r);padding:10px 18px;font-weight:600;cursor:pointer}
+.btn:hover{background:#155F9C;border-color:#155F9C}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--teal);border-color:#B9C8D2}
+.btn.ghost:hover{background:#EDF4F8}
+.btn.sm{padding:6px 11px;font-size:12.5px}
+.btn.danger{background:#fff;color:var(--alert);border-color:#E0C0C0}
+.btn.danger:hover{background:#FBF1F1}
+
+.preview{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--r);padding:12px 14px;background:#F8FBFC;margin-bottom:14px}
+.preview.set{border-left-color:var(--cyan);background:#F1F9FD}
+.preview .pv-top{display:flex;align-items:baseline;gap:10px}
+.preview .pv-pts{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:600;line-height:1}
+.preview .pv-cat{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.preview .pv-note{font-size:12.5px;color:var(--slate);margin-top:6px}
+
+.shield-box{text-align:center;padding:4px 0 10px}
+.shield-cap{font-size:12px;color:var(--mute);margin-top:8px}
+.legend{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.leg{display:grid;grid-template-columns:82px 1fr auto;gap:10px;align-items:center;font-size:13px}
+.leg b{font-weight:600}
+.track{height:8px;background:#DFE8ED;border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:99px}
+.leg .val{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;white-space:nowrap}
+.bonus{border-top:1px dashed var(--line);padding-top:10px;margin-top:2px}
+
+.pill{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid}
+.pill.ok{color:var(--ok);border-color:#B4D6C6;background:#EFF7F3}
+.pill.prog{color:var(--warn);border-color:#E6D2B6;background:#FBF5EC}
+.pill.flag{color:var(--alert);border-color:#E4C6C6;background:#FBF2F2}
+.pill.past{color:var(--slate);border-color:#C8D5DD;background:#EFF4F7}
+.pill.part{color:var(--teal);border-color:#B6D3DF;background:#EDF6FA}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid #EAF0F3;white-space:nowrap}
+thead th{background:#E9F1F5;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);font-weight:700;position:sticky;top:0;cursor:pointer;user-select:none}
+thead th:hover{background:#DDE9EF}
+thead th.nosort{cursor:default}
+tbody tr:hover{background:#F7FBFC}
+tbody tr.clickable{cursor:pointer}
+tbody tr.former td:first-child{border-left:3px solid var(--mute)}
+td.num,th.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+td.name{font-weight:600}
+.short{display:inline-block;max-width:220px;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom;white-space:nowrap}
+.met{color:var(--ok);font-weight:600}
+.under{color:var(--warn)}
+.dim{color:var(--mute)}
+
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+@media (max-width:960px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:#fff;padding:14px 16px}
+.kpi .k{font-family:"IBM Plex Mono",monospace;font-size:25px;font-weight:600;line-height:1.1;color:var(--teal)}
+.kpi .l{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-top:3px}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar .grow{flex:1 1 180px;min-width:150px}
+.toolbar input[type=text],.toolbar select,.toolbar input[type=date]{padding:7px 10px}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:var(--navy);color:#fff;padding:11px 20px;border-radius:var(--r);font-size:14px;font-weight:500;box-shadow:0 6px 22px rgba(14,43,65,.3);z-index:90;max-width:min(560px,92vw);text-align:center}
+.empty{padding:34px 20px;text-align:center;color:var(--mute);font-size:14px;background:#fff;border:1px dashed var(--line);border-radius:var(--r)}
+
+.scrim{position:fixed;inset:0;background:rgba(14,43,65,.45);z-index:70}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(680px,100%);background:var(--paper);z-index:71;overflow-y:auto;box-shadow:-8px 0 30px rgba(14,43,65,.25)}
+.drawer-head{background:var(--navy);color:#fff;padding:18px 22px;display:flex;align-items:flex-start;gap:12px;position:sticky;top:0;z-index:2;border-bottom:3px solid var(--cyan)}
+.drawer-head h2{color:#fff;font-size:22px}
+.drawer-head .role{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8FAEC2;margin-top:4px}
+.x{margin-left:auto;background:none;border:1px solid #2C536C;color:#E8F1F6;border-radius:var(--r);width:30px;height:30px;cursor:pointer;font-size:16px;line-height:1;flex:none}
+.drawer-body{padding:18px}
+
+.note{border-left:3px solid var(--cyan);background:#F1F9FD;padding:11px 14px;font-size:13px;color:var(--slate);border-radius:0 var(--r) var(--r) 0}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
+.kv dt{color:var(--mute)}
+.kv dd{margin:0;font-weight:600}
+.lock{max-width:400px;margin:40px auto}
+hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="mast-in">
+    <svg class="crest" viewBox="0 0 32 36" aria-hidden="true">
+      <path d="M16 2 30 6.6v13.6C30 29 23.6 33.4 16 35 8.4 33.4 2 29 2 20.2V6.6z" fill="none" stroke="#29A9E0" stroke-width="2.4"/>
+      <path d="M20.5 10.5c-6 0-9 3.2-9 7.2 0 3.4 2.4 5.6 5.6 5.6 1.4 0 2.6-.4 3.4-1" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M20.5 10.5v15" stroke="#29A9E0" stroke-width="2.4" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="mast-t">Guardian Ministry</div>
+      <div class="mast-s">Training Record ¬∑ Good Shepherd Catholic Community</div>
+    </div>
+    <div class="mast-yr">
+      <span>Tracking year</span>
+      <select id="yearSel" aria-label="Tracking year"></select>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-in" role="tablist">
+    <button class="tab" role="tab" data-panel="log" aria-selected="true">Log training</button>
+    <button class="tab" role="tab" data-panel="me" aria-selected="false">My record</button>
+    <button class="tab" role="tab" data-panel="std" aria-selected="false">Standards</button>
+    <button class="tab" role="tab" data-panel="cmd" aria-selected="false">Command</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section class="panel on" id="p-log">
+  <div class="cols">
+    <div>
+      <div class="card">
+        <h2>Log a training activity</h2>
+        <p class="sub">Pick your name and what you did. Points fill in automatically.</p>
+        <div class="field">
+          <label for="fGuardian">Guardian</label>
+          <select id="fGuardian"><option value="">Select your name‚Ä¶</option></select>
+        </div>
+        <div class="field">
+          <label for="fActivity">Training activity</label>
+          <select id="fActivity"><option value="">Select an activity‚Ä¶</option></select>
+        </div>
+        <div class="preview" id="pv">
+          <div class="pv-top">
+            <span class="pv-pts" id="pvPts">‚Äî</span>
+            <span class="pv-cat" id="pvCat" style="color:var(--mute)">Points award</span>
+          </div>
+          <div class="pv-note" id="pvNote">Choose an activity and its point value appears here.</div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="fDate">Date completed</label>
+            <input type="date" id="fDate">
+            <div class="hint" id="dateHint"></div>
+          </div>
+          <div class="field">
+            <label for="fProof">Proof or documentation link</label>
+            <input type="url" id="fProof" placeholder="https://‚Ä¶ (optional)">
+            <div class="hint">Certificate, photo, or scorecard link.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fNotes">Details</label>
+          <textarea id="fNotes" placeholder="Location, duration or rounds fired, instructor or method, specific skills trained."></textarea>
+        </div>
+        <button class="btn" id="btnSave">Record training</button>
+        <button class="btn ghost" id="btnClear" type="button">Clear form</button>
+      </div>
+
+      <div class="card">
+        <h2>Your recent entries</h2>
+        <p class="sub" id="recentSub">Select your name to see what you have logged this year.</p>
+        <div id="recentBox"></div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card">
+        <div class="eyebrow">Annual readiness</div>
+        <div class="shield-box">
+          <svg id="shield" width="176" height="204" viewBox="0 0 176 204" role="img" aria-labelledby="shTitle">
+            <title id="shTitle">Readiness by category</title>
+            <defs><clipPath id="shClip">
+              <path d="M88 5 169 30v70c0 47-34 76-81 92C41 176 7 147 7 100V30z"/>
+            </clipPath></defs>
+            <g clip-path="url(#shClip)">
+              <rect x="0" y="0" width="176" height="204" fill="#E4EDF2"/>
+              <rect x="0" y="0"   width="176" height="67" fill="#DDE8EE"/>
+              <rect x="0" y="68"  width="176" height="67" fill="#E1EDF4"/>
+              <rect x="0" y="136" width="176" height="68" fill="#E5F1F8"/>
+              <rect id="fillC" x="0" y="0"   width="0" height="67" fill="var(--combat)"/>
+              <rect id="fillS" x="0" y="68"  width="0" height="67" fill="var(--security)"/>
+              <rect id="fillP" x="0" y="136" width="0" height="68" fill="var(--spiritual)"/>
+              <rect x="0" y="67" width="176" height="1" fill="#fff"/>
+              <rect x="0" y="135" width="176" height="1" fill="#fff"/>
+            </g>
+            <path d="M88 5 169 30v70c0 47-34 76-81 92C41 176 7 147 7 100V30z" fill="none" stroke="var(--navy)" stroke-width="2.5"/>
+          </svg>
+          <div class="shield-cap" id="shieldCap">No guardian selected</div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Reminder</div>
+        <p style="font-size:13.5px;color:var(--slate);margin:8px 0 0">
+          Level 1 Qualification, Advanced Qualification, and Annual Scenario Training are required by the diocese every year and do <b>not</b> earn points here.
+        </p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="panel" id="p-me">
+  <div class="card">
+    <h2>My record</h2>
+    <p class="sub">Your full activity log for the selected year, plus prior years on file.</p>
+    <div class="field" style="max-width:340px">
+      <label for="meGuardian">Guardian</label>
+      <select id="meGuardian"><option value="">Select your name‚Ä¶</option></select>
+    </div>
+    <div id="meBody"></div>
+  </div>
+</section>
+
+<section class="panel" id="p-std">
+  <div class="card">
+    <h2>Point values</h2>
+    <p class="sub">Every activity that earns credit, from the Guardian Ministry Training &amp; Proficiency Standards.</p>
+    <div id="stdBody"></div>
+  </div>
+</section>
+
+<section class="panel" id="p-cmd">
+  <div id="cmdLock" class="card lock">
+    <h2>Coordinator access</h2>
+    <p class="sub">Enter the coordinator code to open the command dashboard.</p>
+    <div class="field"><label for="pin">Access code</label><input type="password" id="pin" autocomplete="off"></div>
+    <button class="btn" id="btnPin">Open dashboard</button>
+    <p class="hint" style="margin-top:12px">This code hides the dashboard from casual view. It is not a substitute for real security ‚Äî see the deployment notes.</p>
+  </div>
+
+  <div id="cmdBody" style="display:none">
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+      <h2>Command dashboard</h2>
+      <p class="sub" id="cmdSub"></p>
+      <div class="toolbar">
+        <div class="grow"><input type="text" id="cmdSearch" placeholder="Search name or role‚Ä¶"></div>
+        <select id="cmdFilter" style="width:auto">
+          <option value="all">Everyone who served this year</option>
+          <option value="current">Current members only</option>
+          <option value="former">Former members only</option>
+          <option value="review">Needs review only</option>
+          <option value="met">Standards met only</option>
+          <option value="partial">Partial-year members only</option>
+          <option value="none">No entries yet</option>
+        </select>
+        <button class="btn ghost sm" data-exp="csv">Export CSV</button>
+        <button class="btn ghost sm" data-exp="xlsx">Export XLSX</button>
+        <button class="btn ghost sm" data-exp="xls">Export XLS</button>
+      </div>
+      <div id="cmdTable"></div>
+      <p class="hint" id="proNote"></p>
+    </div>
+
+    <div class="card">
+      <h2>Full activity log</h2>
+      <p class="sub" id="logSub"></p>
+      <div id="logTable"></div>
+    </div>
+
+    <div class="card">
+      <h2>Roster</h2>
+      <p class="sub">Add members, set service dates, and retire members. Nothing is erased ‚Äî retired members keep their record and stay on the years they served.</p>
+      <div class="toolbar">
+        <input type="text" id="newName" class="grow" placeholder="Last, First">
+        <input type="text" id="newRole" style="width:160px" placeholder="Role (e.g. ART)">
+        <input type="date" id="newStart" style="width:170px" title="Service start date">
+        <button class="btn sm" id="btnAddMember">Add guardian</button>
+      </div>
+      <div id="rosterTable"></div>
+      <p class="hint">Leave a start date blank for members who have served since before the tracking years on file ‚Äî they are measured against the full annual standard.</p>
+    </div>
+
+    <div class="card">
+      <h2>Settings</h2>
+      <p class="sub">Annual targets and caps. Changes save immediately and apply to every year.</p>
+      <div class="split">
+        <div>
+          <div class="eyebrow" style="margin-bottom:10px">Annual targets (full year)</div>
+          <div class="field"><label for="tC">Firearms combat marksmanship</label><input type="text" id="tC" class="mono" data-target="Combat"></div>
+          <div class="field"><label for="tS">Security skills</label><input type="text" id="tS" class="mono" data-target="Security"></div>
+          <div class="field"><label for="tP">Spiritual development</label><input type="text" id="tP" class="mono" data-target="Spiritual"></div>
+        </div>
+        <div>
+          <div class="eyebrow" style="margin-bottom:10px">Annual caps and rules</div>
+          <div class="field"><label for="capA">Combat personal practice cap</label><input type="text" id="capA" class="mono" data-cap="combat-practice"></div>
+          <div class="field"><label for="capB">Security half-point items cap</label><input type="text" id="capB" class="mono" data-cap="security-half"></div>
+          <div class="field">
+            <label for="enforce">Cap handling</label>
+            <select id="enforce">
+              <option value="1">Enforce caps ‚Äî points above the cap do not count</option>
+              <option value="0">Flag only ‚Äî count everything, mark it for review</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="prorate">Partial-year members</label>
+            <select id="prorate">
+              <option value="1">Prorate targets by days served</option>
+              <option value="0">Hold everyone to the full annual target</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <hr class="rule">
+      <div class="eyebrow" style="margin-bottom:10px">Data</div>
+      <div class="toolbar">
+        <button class="btn ghost sm" id="btnSample">Load sample entries</button>
+        <button class="btn danger sm" id="btnWipe">Delete entries for <span id="wipeYr"></span></button>
+      </div>
+      <p class="hint">Sample entries are for demonstration. Delete them before the team starts logging real training. Deleting a year removes only that year's entries ‚Äî the roster and every other year stay intact.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* =====================================================================
+   CONFIGURATION ‚Äî edit these before you deploy
+   ===================================================================== */
+const CONFIG = {
+  accessCode : "GSCC2026!",
+  apiUrl     : "",
+  storageKey : "gscc-guardian-tracker-v1"
+};
+/* ===================================================================== */
+
+const CATS = {
+  Combat:   {label:"Firearms Combat Marksmanship", short:"Combat",    color:"var(--combat)",    required:true},
+  Security: {label:"Security Skills",              short:"Security",  color:"var(--security)",  required:true},
+  Spiritual:{label:"Spiritual Development",        short:"Spiritual", color:"var(--spiritual)", required:true},
+  Team:     {label:"Team Development",             short:"Team dev",  color:"var(--team)",      required:false},
+  Diocese:  {label:"Diocese Support",              short:"Diocese",   color:"var(--diocese)",   required:false}
+};
+const ORDER = ["Combat","Security","Spiritual","Team","Diocese"];
+const REQ   = ["Combat","Security","Spiritual"];
+
+const CATALOG = [
+  {id:"c1",cat:"Combat",name:"Parish-Led Live Fire Range Day",pts:3,note:"Guardian qual course of fire or substitute course"},
+  {id:"c2",cat:"Combat",name:"Full-Day or Multi-Day Firearms Course",pts:3,note:"Leadership approval recommended"},
+  {id:"c3",cat:"Combat",name:"Match / Competition (USPSA, GSSF, etc.)",pts:1,note:"Must support ministry objectives"},
+  {id:"c4",cat:"Combat",name:"Personal Practice (30 min dry fire or 100 rounds)",pts:0.5,note:"Counts toward the combat practice cap",cap:"combat-practice"},
+  {id:"s1",cat:"Security",name:"AGS Topic-Specific Module",pts:2,note:"Multiple modules offered annually"},
+  {id:"s2",cat:"Security",name:"Combatives / Control Techniques Course",pts:2,note:"Must be instructed by a reputable trainer"},
+  {id:"s3",cat:"Security",name:"Interdiction / Deconfliction Course",pts:2,note:"Must support Guardian objectives"},
+  {id:"s4",cat:"Security",name:"Medical Training (CPR / AED / Stop the Bleed)",pts:2,note:"Auto-awarded for active medical certifications"},
+  {id:"s5",cat:"Security",name:"Certified In-Person Security Course",pts:1,note:"Certificate or proof required"},
+  {id:"s6",cat:"Security",name:"Online Security Skills Course",pts:0.5,note:"Counts toward the half-point cap",cap:"security-half"},
+  {id:"s7",cat:"Security",name:"Non-Certified Training (BJJ, Krav Maga, etc.)",pts:0.5,note:"Counts toward the half-point cap",cap:"security-half"},
+  {id:"s8",cat:"Security",name:"Self-Training / Practice / Study",pts:0.5,note:"Counts toward the half-point cap",cap:"security-half"},
+  {id:"p1",cat:"Spiritual",name:"Daily Prayer (20 min/day for 5 consecutive days)",pts:1,note:"Encourages consistency"},
+  {id:"p2",cat:"Spiritual",name:"Confession (6 annually)",pts:1,note:"Goal: monthly confession"},
+  {id:"p3",cat:"Spiritual",name:"Catholic Study Participation",pts:1,note:"Bible study or faith formation"},
+  {id:"p4",cat:"Spiritual",name:"Spiritual Book or Audiobook",pts:1,note:"Must support spiritual growth"},
+  {id:"p5",cat:"Spiritual",name:"Adoration (1 hour)",pts:1,note:"Eucharistic Adoration"},
+  {id:"p6",cat:"Spiritual",name:"Friday Fast from Meat",pts:1,note:"Spiritual discipline"},
+  {id:"p7",cat:"Spiritual",name:"Work of Mercy",pts:1,note:"Service to others"},
+  {id:"t1",cat:"Team",name:"Recruiting a Qualified Applicant",pts:2,note:"Awarded when the applicant completes vetting paperwork"},
+  {id:"d1",cat:"Diocese",name:"Diocese Volunteer Event",pts:2,note:"For example, working the Nolan football game"}
+];
+
+const ROSTER = [
+  ["Hesselgrave, Mark","Training Coordinator"],["Perone, John","Team Lead"],["Cochran, Jerry","ART"],
+  ["Johansson, Ronald","Team Lead"],["Buttry, Jimmy","ART"],["Balser, Roger","ART"],["Migliaccio, Ken","ART"],
+  ["Morton, John","ART"],["Sakovich, Peter","Medical Team Lead"],["Falcon, Bruce","ART"],
+  ["Weimholt, Brendan","ART"],["Calhoun, Greg","Team Lead"],["Weisenfels, Louis","ART"],["Lippies, Randy","ART"],
+  ["Bunn, Zac","Team Lead"],["Bertrand, Carlos","ART"],["Gustafson, Chris","Team Lead"],["Parten, Luke","ART"],
+  ["Via, Wayne","Team Lead"],["Deichert, Jeff","ART"],["Brieger, John","Team Lead"],["Alegria, David","Team Lead"],
+  ["Deras, Franco","ART"],["Matteson, Ray","ART"],["Schultz, Garth","ART"],["Stregles, Dwan","ART"],
+  ["Javier, Raymond","ART"],["Johnson, Michael","ART"],["Hawthorne, David","Coordinator"],["Crouch, Jared","ART"],
+  ["Sudduth, James","ART"],["Lopez, David","ART"],["Clower, Toby","ART"],["Treadway, James","ART"],
+  ["Roldan, Pedro","ART"],["Miller, Michael","ART"],["Higgins, Collin","ART"],["Licata, Joe","ART"]
+].map(([name,role])=>({name,role,start:null,end:null}));
+
+let S = {
+  year: new Date().getFullYear(),
+  targets:{Combat:5,Security:3,Spiritual:4},
+  caps:{"combat-practice":4,"security-half":4},
+  enforceCaps:true,
+  prorate:true,
+  roster:ROSTER,
+  entries:[]
+};
+
+/* ---------- storage ---------- */
+const Store = {
+  async load(){
+    try{ if(CONFIG.apiUrl){const r=await fetch(CONFIG.apiUrl);const d=await r.json();if(d&&d.roster)return d;} }
+    catch(e){ console.warn("API load failed; falling back to local data.",e); }
+    try{ if(window.storage){const r=await window.storage.get(CONFIG.storageKey,true);if(r&&r.value)return JSON.parse(r.value);} }catch(e){}
+    try{ const raw=localStorage.getItem(CONFIG.storageKey); if(raw) return JSON.parse(raw); }catch(e){}
+    return null;
+  },
+  async save(){
+    const json=JSON.stringify(S);
+    try{ if(CONFIG.apiUrl) await fetch(CONFIG.apiUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:json}); }
+    catch(e){ console.warn("API save failed.",e); }
+    try{ if(window.storage) await window.storage.set(CONFIG.storageKey,json,true); }catch(e){}
+    try{ localStorage.setItem(CONFIG.storageKey,json); }catch(e){}
+  }
+};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>(Math.round(n*100)/100).toString();
+const item=id=>CATALOG.find(a=>a.id===id);
+const yearOf=d=>+String(d).slice(0,4);
+const qtrOf=d=>Math.ceil(+String(d).slice(5,7)/3);
+const DAY=86400000;
+const utc=s=>{const[y,m,d]=String(s).split("-").map(Number);return Date.UTC(y,m-1,d);};
+const iso=ms=>new Date(ms).toISOString().slice(0,10);
+const today=()=>new Date().toISOString().slice(0,10);
+const pretty=d=>{if(!d)return"‚Äî";const[y,m,dd]=String(d).split("-");return `${+m}/${+dd}/${y}`;};
+const shortD=d=>{if(!d)return"";const[y,m,dd]=String(d).split("-");
+  return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m-1]+" "+(+dd);};
+
+function toast(msg){$$(".toast").forEach(t=>t.remove());
+  const el=document.createElement("div");el.className="toast";el.textContent=msg;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),3600);}
+
+/* ---------- service window & proration ---------- */
+function service(m,year){
+  const jan=Date.UTC(year,0,1), dec=Date.UTC(year,11,31);
+  const inYearDays=(Date.UTC(year+1,0,1)-jan)/DAY;
+  const s=m.start?utc(m.start):-Infinity, e=m.end?utc(m.end):Infinity;
+  const from=Math.max(s,jan), to=Math.min(e,dec);
+  if(from>to) return {served:false,days:0,fraction:0,partial:false,from:null,to:null,inYearDays};
+  const days=(to-from)/DAY+1;
+  return {served:true,days,fraction:days/inYearDays,partial:from>jan||to<dec,
+          from:iso(from),to:iso(to),inYearDays,
+          startedMid:from>jan, endedMid:to<dec};
+}
+function targetFor(cat,m,year){
+  const base=S.targets[cat]; if(!base) return 0;
+  if(!S.prorate) return base;
+  return Math.round(base*service(m,year).fraction*2)/2;
+}
+function serviceLabel(m,year){
+  const sv=service(m,year);
+  if(!sv.served) return "‚Äî";
+  if(!sv.partial) return "Full year";
+  const a=sv.startedMid?shortD(sv.from):"Jan 1", b=sv.endedMid?shortD(sv.to):"Dec 31";
+  return `${a} ‚Äì ${b}`;
+}
+const memberOf=n=>S.roster.find(m=>m.name===n)||{name:n,role:"‚Äî",start:null,end:null};
+const servedIn=year=>S.roster.filter(m=>service(m,year).served);
+const isCurrent=m=>!m.end;
+
+/* ---------- scoring ---------- */
+function scoreGuardian(name,year){
+  year=year??S.year;
+  const m=memberOf(name), sv=service(m,year);
+  const rows=S.entries.filter(e=>e.guardian===name&&yearOf(e.date)===year)
+    .sort((a,b)=>a.date.localeCompare(b.date)||String(a.id).localeCompare(String(b.id)));
+  const used={}, counted={},raw={};
+  ORDER.forEach(c=>{counted[c]=0;raw[c]=0;});
+  let overCap=0,noProof=0,outside=0;
+  const detail=rows.map(e=>{
+    const a=item(e.activityId), cat=e.cat, pts=e.pts;
+    let credit=pts;
+    if(a&&a.cap){
+      const cap=S.caps[a.cap]??Infinity, before=used[a.cap]||0;
+      if(S.enforceCaps) credit=Math.max(0,Math.min(pts,cap-before));
+      used[a.cap]=before+pts;
+      if(before+pts>cap) overCap++;
+    }
+    raw[cat]+=pts; counted[cat]+=credit;
+    if(!e.proof) noProof++;
+    const off = sv.served && (e.date<sv.from||e.date>sv.to);
+    if(off) outside++;
+    return {...e,credit,capped:credit<pts,outside:off};
+  });
+  const targets={}; REQ.forEach(c=>targets[c]=targetFor(c,m,year));
+  const met = sv.served && REQ.every(c=>counted[c]>=targets[c]);
+  const total=ORDER.reduce((t,c)=>t+counted[c],0);
+  return {name,role:m.role,member:m,year,service:sv,targets,rows:detail,counted,raw,total,met,
+    overCap,noProof,outside,count:rows.length,
+    last:rows.length?rows[rows.length-1].date:null,
+    current:isCurrent(m)};
+}
+function yearsOnFile(){
+  const ys=new Set([S.year,new Date().getFullYear()]);
+  S.entries.forEach(e=>ys.add(yearOf(e.date)));
+  S.roster.forEach(m=>{if(m.start)ys.add(yearOf(m.start));if(m.end)ys.add(yearOf(m.end));});
+  return [...ys].sort((a,b)=>b-a);
+}
+
+/* ---------- shield ---------- */
+function paintShield(name){
+  const map={Combat:"fillC",Security:"fillS",Spiritual:"fillP"};
+  if(!name){Object.values(map).forEach(i=>$("#"+i).setAttribute("width",0));
+    $("#shieldCap").textContent="No guardian selected";$("#legend").innerHTML="";return;}
+  const s=scoreGuardian(name);
+  REQ.forEach(c=>{const t=s.targets[c];
+    $("#"+map[c]).setAttribute("width",(176*(t>0?Math.min(1,s.counted[c]/t):1)).toFixed(1));});
+  $("#shieldCap").innerHTML=(s.met?`<span class="pill ok">Standards met</span>`:`<span class="pill prog">In progress</span>`)
+    +(s.service.partial?` <span class="pill part">Partial year</span>`:"");
+  $("#legend").innerHTML=REQ.map(c=>{
+    const t=s.targets[c],v=s.counted[c];
+    return `<div class="leg"><b>${CATS[c].short}</b>
+      <div class="track"><i style="width:${t?Math.min(100,v/t*100):(v>0?100:0)}%;background:${CATS[c].color}"></i></div>
+      <span class="val ${t&&v>=t?'met':''}">${fmt(v)} / ${fmt(t)}</span></div>`;
+  }).join("")+`<div class="bonus">`+["Team","Diocese"].map(c=>
+    `<div class="leg" style="grid-template-columns:82px 1fr auto"><b>${CATS[c].short}</b>
+      <span class="dim" style="font-size:12px">Bonus</span>
+      <span class="val" style="color:${CATS[c].color}">${fmt(s.counted[c])} pts</span></div>`).join("")+`</div>`;
+}
+
+/* ---------- selects & form ---------- */
+function fillSelects(){
+  const names=servedIn(S.year).map(m=>m.name).sort((a,b)=>a.localeCompare(b));
+  ["#fGuardian","#meGuardian"].forEach(sel=>{
+    const el=$(sel),cur=el.value;
+    el.innerHTML=`<option value="">Select your name‚Ä¶</option>`+names.map(n=>{
+      const m=memberOf(n); return `<option>${esc(n)}</option>`;}).join("");
+    if(names.includes(cur)) el.value=cur;
+  });
+  const act=$("#fActivity"),cur=act.value;
+  act.innerHTML=`<option value="">Select an activity‚Ä¶</option>`+ORDER.map(c=>
+    `<optgroup label="${CATS[c].label}${CATS[c].required?"":" (bonus)"}">`+
+    CATALOG.filter(a=>a.cat===c).map(a=>`<option value="${a.id}">${esc(a.name)} ‚Äî ${fmt(a.pts)} pt${a.pts===1?"":"s"}</option>`).join("")+
+    `</optgroup>`).join("");
+  act.value=cur;
+  const ys=$("#yearSel");
+  ys.innerHTML=yearsOnFile().map(y=>`<option ${y===S.year?"selected":""}>${y}</option>`).join("");
+  $("#wipeYr") && ($("#wipeYr").textContent=S.year);
+}
+
+function renderPreview(){
+  const a=item($("#fActivity").value),pv=$("#pv");
+  if(!a){pv.classList.remove("set");
+    $("#pvPts").textContent="‚Äî";$("#pvPts").style.color="";
+    $("#pvCat").textContent="Points award";$("#pvCat").style.color="var(--mute)";
+    $("#pvNote").textContent="Choose an activity and its point value appears here.";}
+  else{
+    pv.classList.add("set");
+    $("#pvPts").textContent=fmt(a.pts);$("#pvPts").style.color=CATS[a.cat].color;
+    $("#pvCat").textContent=CATS[a.cat].label+(CATS[a.cat].required?"":" ¬∑ bonus");
+    $("#pvCat").style.color=CATS[a.cat].color;
+    const g=$("#fGuardian").value;let extra="";
+    if(a.cap&&g){
+      const s=scoreGuardian(g);
+      const usedPts=s.rows.filter(r=>{const x=item(r.activityId);return x&&x.cap===a.cap;}).reduce((t,r)=>t+r.pts,0);
+      extra=` You have used ${fmt(usedPts)} of the ${S.caps[a.cap]}-point annual cap in this group.`;
+    }
+    $("#pvNote").textContent=a.note+"."+extra;
+  }
+  // date-window hint
+  const g=$("#fGuardian").value,d=$("#fDate").value,h=$("#dateHint");
+  h.className="hint";h.textContent="";
+  if(g){
+    const sv=service(memberOf(g),S.year);
+    if(sv.served&&sv.partial) h.textContent=`On the roster ${serviceLabel(memberOf(g),S.year)} in ${S.year}.`;
+    if(d&&sv.served&&(d<sv.from||d>sv.to)){
+      h.className="hint warn";
+      h.textContent=`That date falls outside this guardian's ${S.year} service window (${serviceLabel(memberOf(g),S.year)}). It will still be recorded.`;
+    }
+  }
+}
+
+function renderRecent(){
+  const n=$("#fGuardian").value,box=$("#recentBox");
+  if(!n){$("#recentSub").textContent="Select your name to see what you have logged this year.";box.innerHTML="";return;}
+  const s=scoreGuardian(n);
+  $("#recentSub").textContent=`${s.count} ${s.count===1?"entry":"entries"} in ${S.year} ¬∑ ${fmt(s.total)} points counted.`;
+  if(!s.count){box.innerHTML=`<div class="empty">Nothing logged for ${S.year} yet. Your first entry starts the record.</div>`;return;}
+  box.innerHTML=`<div class="tbl-wrap"><table><thead><tr>
+    <th class="nosort">Date</th><th class="nosort">Activity</th><th class="nosort">Category</th>
+    <th class="num nosort">Points</th><th class="nosort">Proof</th></tr></thead><tbody>`+
+    [...s.rows].reverse().slice(0,8).map(r=>`<tr>
+      <td class="mono">${pretty(r.date)}</td>
+      <td><span class="short" title="${esc(r.activity)}">${esc(r.activity)}</span></td>
+      <td style="color:${CATS[r.cat].color};font-weight:600">${CATS[r.cat].short}</td>
+      <td class="num">${fmt(r.credit)}${r.capped?" *":""}</td>
+      <td>${r.proof?`<a href="${esc(r.proof)}" target="_blank" rel="noopener">View</a>`:`<span style="color:var(--warn)">Missing</span>`}</td>
+    </tr>`).join("")+`</tbody></table></div>`+
+    (s.rows.some(r=>r.capped)?`<p class="hint">* Points beyond the annual cap are recorded but not counted toward your total.</p>`:"");
+}
+
+function renderMe(){
+  const n=$("#meGuardian").value;
+  $("#meBody").innerHTML=n?guardianDetailHTML(scoreGuardian(n),false):`<div class="empty">Select your name to see your record.</div>`;
+}
+
+function yearHistoryHTML(name){
+  const ys=yearsOnFile().filter(y=>scoreGuardian(name,y).count>0||service(memberOf(name),y).served);
+  if(ys.length<2) return "";
+  return `<div class="card" style="margin-top:16px"><div class="eyebrow" style="margin-bottom:12px">Year history</div>
+    <div class="tbl-wrap"><table><thead><tr><th class="nosort">Year</th><th class="nosort">Served</th>
+    ${ORDER.map(c=>`<th class="num nosort">${CATS[c].short}</th>`).join("")}
+    <th class="num nosort">Total</th><th class="nosort">Result</th></tr></thead><tbody>`+
+    ys.map(y=>{const s=scoreGuardian(name,y);
+      return `<tr><td class="mono">${y}</td><td class="dim">${serviceLabel(s.member,y)}</td>`+
+      ORDER.map(c=>`<td class="num ${CATS[c].required?(s.counted[c]>=s.targets[c]?'met':'under'):''}">${fmt(s.counted[c])}${CATS[c].required?`<span class="dim">/${fmt(s.targets[c])}</span>`:""}</td>`).join("")+
+      `<td class="num"><b>${fmt(s.total)}</b></td>
+       <td>${!s.service.served?`<span class="pill past">Not on roster</span>`:s.met?`<span class="pill ok">Met</span>`:`<span class="pill prog">Review</span>`}</td></tr>`;
+    }).join("")+`</tbody></table></div></div>`;
+}
+
+function guardianDetailHTML(s,admin){
+  const cats=ORDER.map(c=>{
+    const t=s.targets[c]||0,v=s.counted[c],gap=CATS[c].required?Math.max(0,t-v):0;
+    if(!CATS[c].required) return `<div class="leg" style="grid-template-columns:92px 1fr auto">
+      <b>${CATS[c].short}</b><span class="dim" style="font-size:12px">Bonus</span>
+      <span class="val" style="color:${CATS[c].color}">${fmt(v)} pts</span></div>`;
+    return `<div class="leg" style="grid-template-columns:92px 1fr auto"><b>${CATS[c].short}</b>
+      <div class="track"><i style="width:${t?Math.min(100,v/t*100):(v>0?100:0)}%;background:${CATS[c].color}"></i></div>
+      <span class="val ${v>=t?'met':'under'}">${fmt(v)} / ${fmt(t)}${gap>0?`  (${fmt(gap)} to go)`:""}</span></div>`;
+  }).join("");
+
+  const log=s.rows.length?`<div class="tbl-wrap"><table><thead><tr>
+    <th class="nosort">Date</th><th class="nosort">Q</th><th class="nosort">Activity</th><th class="nosort">Category</th>
+    <th class="num nosort">Awarded</th><th class="num nosort">Counted</th><th class="nosort">Proof</th><th class="nosort">Details</th>
+    ${admin?'<th class="nosort"></th>':''}</tr></thead><tbody>`+
+    [...s.rows].reverse().map(r=>`<tr>
+      <td class="mono">${pretty(r.date)}${r.outside?` <span title="Outside service window" style="color:var(--warn)">!</span>`:""}</td>
+      <td class="mono">Q${qtrOf(r.date)}</td>
+      <td><span class="short" title="${esc(r.activity)}">${esc(r.activity)}</span></td>
+      <td style="color:${CATS[r.cat].color};font-weight:600">${CATS[r.cat].short}</td>
+      <td class="num">${fmt(r.pts)}</td><td class="num ${r.capped?'under':''}">${fmt(r.credit)}</td>
+      <td>${r.proof?`<a href="${esc(r.proof)}" target="_blank" rel="noopener">View</a>`:`<span style="color:var(--warn)">Missing</span>`}</td>
+      <td><span class="short" title="${esc(r.notes)}">${esc(r.notes||"‚Äî")}</span></td>
+      ${admin?`<td><button class="btn ghost sm" data-del="${r.id}">Delete</button></td>`:''}
+    </tr>`).join("")+`</tbody></table></div>`
+    :`<div class="empty">No entries recorded for ${s.year}.</div>`;
+
+  const prorated=s.service.partial&&S.prorate;
+  return `<div class="split" style="margin-bottom:16px">
+    <div class="card"><div class="eyebrow">Progress ¬∑ ${s.year}</div>
+      <div class="legend" style="margin-top:12px">${cats}</div>
+      <p style="margin:16px 0 0">
+        ${!s.service.served?`<span class="pill past">Not on roster in ${s.year}</span>`:s.met?`<span class="pill ok">Standards met</span>`:`<span class="pill prog">In progress</span>`}
+        ${s.service.partial?` <span class="pill part">Partial year</span>`:""}
+        ${!s.current?` <span class="pill past">Former member</span>`:""}
+        ${s.overCap?` <span class="pill flag">${s.overCap} over cap</span>`:""}
+        ${s.noProof?` <span class="pill flag">${s.noProof} missing proof</span>`:""}</p>
+      ${prorated?`<p class="hint">Targets prorated to ${Math.round(s.service.fraction*100)}% of the year (${s.service.days} days served).</p>`:""}
+    </div>
+    <div class="card"><div class="eyebrow">Summary</div>
+      <dl class="kv" style="margin-top:12px">
+        <dt>Role</dt><dd>${esc(s.role)}</dd>
+        <dt>Service start</dt><dd class="mono">${s.member.start?pretty(s.member.start):"Before records"}</dd>
+        <dt>Service end</dt><dd class="mono">${s.member.end?pretty(s.member.end):"Active"}</dd>
+        <dt>On roster in ${s.year}</dt><dd>${serviceLabel(s.member,s.year)}</dd>
+        <dt>Entries</dt><dd class="mono">${s.count}</dd>
+        <dt>Points counted</dt><dd class="mono">${fmt(s.total)}</dd>
+        <dt>Points logged</dt><dd class="mono">${fmt(ORDER.reduce((t,c)=>t+s.raw[c],0))}</dd>
+        <dt>Last activity</dt><dd class="mono">${pretty(s.last)}</dd>
+      </dl></div></div>
+    <div class="card"><div class="eyebrow" style="margin-bottom:12px">Activity log ¬∑ ${s.year}</div>${log}</div>
+    ${yearHistoryHTML(s.name)}`;
+}
+
+function renderStandards(){
+  $("#stdBody").innerHTML=ORDER.map(c=>{
+    const t=S.targets[c];
+    return `<div style="margin-bottom:22px">
+      <h3 style="font-size:17px;color:${CATS[c].color}">${CATS[c].label}</h3>
+      <p class="hint" style="margin:2px 0 10px">${t?`Annual requirement: ${t} points, prorated for members who join or leave mid-year.`:"Bonus points. No annual requirement."}</p>
+      <div class="tbl-wrap"><table><thead><tr><th class="nosort">Activity</th><th class="num nosort">Points</th><th class="nosort">Notes</th></tr></thead><tbody>`+
+      CATALOG.filter(a=>a.cat===c).map(a=>`<tr><td>${esc(a.name)}</td><td class="num">${fmt(a.pts)}</td><td style="white-space:normal;color:var(--slate)">${esc(a.note)}</td></tr>`).join("")+
+      `</tbody></table></div></div>`;}).join("")+
+    `<div class="note"><b>Not point-eligible.</b> Level 1 Qualification, Advanced Qualification, and Annual Scenario Training are mandatory diocesan requirements and are tracked separately.</div>`;
+}
+
+/* ---------- command ---------- */
+let sortKey="name",sortDir=1;
+const allScores=(year)=>servedIn(year??S.year).map(m=>scoreGuardian(m.name,year??S.year));
+
+function renderCommand(){
+  const data=allScores();
+  const met=data.filter(d=>d.met).length;
+  const partial=data.filter(d=>d.service.partial).length;
+  const former=data.filter(d=>!d.current).length;
+  const noProof=data.reduce((t,d)=>t+d.noProof,0);
+  const rate=data.length?Math.round(met/data.length*100):0;
+
+  $("#kpis").innerHTML=[[data.length,"Served in "+S.year],[met,"Standards met"],[data.length-met,"Needs review"],
+    [rate+"%","Completion rate"],[partial,"Partial year"],[noProof,"Missing proof"]]
+    .map(([k,l])=>`<div class="kpi"><div class="k">${k}</div><div class="l">${l}</div></div>`).join("");
+  $("#cmdSub").textContent=`${data.length} guardians on the roster during ${S.year}${former?`, including ${former} since retired`:""}. Select any row for the full record.`;
+
+  const q=($("#cmdSearch").value||"").toLowerCase(),f=$("#cmdFilter").value;
+  let rows=data.filter(d=>{
+    if(q&&!(d.name.toLowerCase().includes(q)||d.role.toLowerCase().includes(q)))return false;
+    if(f==="current"&&!d.current)return false;
+    if(f==="former"&&d.current)return false;
+    if(f==="review"&&d.met)return false;
+    if(f==="met"&&!d.met)return false;
+    if(f==="partial"&&!d.service.partial)return false;
+    if(f==="none"&&d.count>0)return false;
+    return true;});
+
+  const key=(d,k)=>({name:d.name,role:d.role,served:d.service.fraction,
+    Combat:d.counted.Combat,Security:d.counted.Security,Spiritual:d.counted.Spiritual,
+    Team:d.counted.Team,Diocese:d.counted.Diocese,total:d.total,status:d.met?1:0,
+    overCap:d.overCap,noProof:d.noProof,count:d.count,last:d.last||""}[k]);
+  rows.sort((a,b)=>{const x=key(a,sortKey),y=key(b,sortKey);
+    return (typeof x==="string"?x.localeCompare(y):x-y)*sortDir;});
+
+  const cols=[["name","Guardian",""],["role","Role",""],["served","On roster",""],
+    ["Combat","Combat","num"],["Security","Security","num"],["Spiritual","Spiritual","num"],
+    ["Team","Team dev","num"],["Diocese","Diocese","num"],["total","Total","num"],["status","Status",""],
+    ["overCap","Cap flags","num"],["noProof","No proof","num"],["count","Entries","num"],["last","Last activity",""]];
+
+  $("#cmdTable").innerHTML=rows.length?`<div class="tbl-wrap"><table><thead><tr>`+
+    cols.map(([k,l,c])=>`<th class="${c}" data-sort="${k}">${l}${sortKey===k?(sortDir>0?" ‚ñ≤":" ‚ñº"):""}</th>`).join("")+
+    `</tr></thead><tbody>`+rows.map(d=>`<tr class="clickable ${d.current?"":"former"}" data-open="${esc(d.name)}">
+      <td class="name">${esc(d.name)}${d.current?"":` <span class="pill past">Former</span>`}</td>
+      <td class="dim">${esc(d.role)}</td>
+      <td class="${d.service.partial?"":"dim"}" style="font-size:12.5px">${serviceLabel(d.member,S.year)}</td>`+
+      REQ.map(c=>`<td class="num ${d.counted[c]>=d.targets[c]?'met':'under'}">${fmt(d.counted[c])}<span class="dim">/${fmt(d.targets[c])}</span></td>`).join("")+
+      `<td class="num">${fmt(d.counted.Team)}</td><td class="num">${fmt(d.counted.Diocese)}</td>
+      <td class="num"><b>${fmt(d.total)}</b></td>
+      <td>${d.met?`<span class="pill ok">Met</span>`:`<span class="pill prog">Review</span>`}</td>
+      <td class="num">${d.overCap||"‚Äî"}</td><td class="num">${d.noProof||"‚Äî"}</td><td class="num">${d.count}</td>
+      <td class="mono">${pretty(d.last)}</td></tr>`).join("")+`</tbody></table></div>`
+    :`<div class="empty">No guardians match this filter.</div>`;
+
+  $("#proNote").textContent=S.prorate
+    ? `Targets shown after the slash are prorated by days on the roster and rounded to the nearest half point. Full-year members carry the full ${S.targets.Combat}/${S.targets.Security}/${S.targets.Spiritual} standard.`
+    : `Proration is off ‚Äî every member is held to the full ${S.targets.Combat}/${S.targets.Security}/${S.targets.Spiritual} standard regardless of start date.`;
+
+  const log=S.entries.filter(e=>yearOf(e.date)===S.year).sort((a,b)=>b.date.localeCompare(a.date));
+  $("#logSub").textContent=`${log.length} ${log.length===1?"entry":"entries"} recorded in ${S.year}.`;
+  $("#logTable").innerHTML=log.length?`<div class="tbl-wrap"><table><thead><tr>
+    <th class="nosort">Date</th><th class="nosort">Guardian</th><th class="nosort">Activity</th><th class="nosort">Category</th>
+    <th class="num nosort">Points</th><th class="nosort">Proof</th><th class="nosort">Details</th><th class="nosort"></th></tr></thead><tbody>`+
+    log.map(e=>`<tr><td class="mono">${pretty(e.date)}</td><td class="name">${esc(e.guardian)}</td>
+      <td><span class="short" title="${esc(e.activity)}">${esc(e.activity)}</span></td>
+      <td style="color:${CATS[e.cat]?CATS[e.cat].color:"var(--slate)"};font-weight:600">${CATS[e.cat]?CATS[e.cat].short:esc(e.cat)}</td>
+      <td class="num">${fmt(e.pts)}</td>
+      <td>${e.proof?`<a href="${esc(e.proof)}" target="_blank" rel="noopener">View</a>`:`<span style="color:var(--warn)">Missing</span>`}</td>
+      <td><span class="short" title="${esc(e.notes)}">${esc(e.notes||"‚Äî")}</span></td>
+      <td><button class="btn ghost sm" data-del="${e.id}">Delete</button></td></tr>`).join("")+
+    `</tbody></table></div>`:`<div class="empty">No training recorded for ${S.year} yet.</div>`;
+
+  $("#tC").value=S.targets.Combat;$("#tS").value=S.targets.Security;$("#tP").value=S.targets.Spiritual;
+  $("#capA").value=S.caps["combat-practice"];$("#capB").value=S.caps["security-half"];
+  $("#enforce").value=S.enforceCaps?"1":"0";$("#prorate").value=S.prorate?"1":"0";
+  renderRoster();
+}
+
+function renderRoster(){
+  const sorted=S.roster.map((m,i)=>({m,i}))
+    .sort((a,b)=>(isCurrent(a.m)===isCurrent(b.m)?a.m.name.localeCompare(b.m.name):(isCurrent(a.m)?-1:1)));
+  const entryCount=n=>S.entries.filter(e=>e.guardian===n).length;
+  $("#rosterTable").innerHTML=`<div class="tbl-wrap"><table><thead><tr>
+    <th class="nosort">Guardian</th><th class="nosort">Role</th><th class="nosort">Service start</th>
+    <th class="nosort">Service end</th><th class="nosort">Status</th><th class="num nosort">Entries</th>
+    <th class="nosort">Actions</th></tr></thead><tbody>`+
+    sorted.map(({m,i})=>{const n=entryCount(m.name);return `<tr class="${isCurrent(m)?"":"former"}">
+      <td class="name">${esc(m.name)}</td>
+      <td><input type="text" value="${esc(m.role)}" data-role="${i}" style="width:150px;padding:5px 8px"></td>
+      <td><input type="date" value="${m.start||""}" data-start="${i}" style="width:160px;padding:5px 8px"></td>
+      <td><input type="date" value="${m.end||""}" data-end="${i}" style="width:160px;padding:5px 8px"></td>
+      <td>${isCurrent(m)?`<span class="pill ok">Active</span>`:`<span class="pill past">Retired ${shortD(m.end)} ${yearOf(m.end)}</span>`}</td>
+      <td class="num">${n}</td>
+      <td>${isCurrent(m)
+        ? `<button class="btn ghost sm" data-retire="${i}">Retire</button>`
+        : `<button class="btn ghost sm" data-reinstate="${i}">Reinstate</button>`}
+        <button class="btn danger sm" data-purge="${i}" ${n?`disabled title="This guardian has ${n} entries on file. Retire them instead so the record is kept."`:``}>Delete</button></td>
+    </tr>`;}).join("")+`</tbody></table></div>`;
+}
+
+function openDrawer(name){
+  const s=scoreGuardian(name);
+  const sc=document.createElement("div");sc.className="scrim";
+  const dw=document.createElement("aside");dw.className="drawer";dw.setAttribute("role","dialog");dw.setAttribute("aria-modal","true");
+  dw.innerHTML=`<div class="drawer-head"><div><h2>${esc(name)}</h2>
+    <div class="role">${esc(s.role)} ¬∑ ${S.year} ¬∑ ${serviceLabel(s.member,S.year)}</div></div>
+    <button class="x" aria-label="Close">‚úï</button></div>
+    <div class="drawer-body">${guardianDetailHTML(s,true)}</div>`;
+  const close=()=>{sc.remove();dw.remove();document.removeEventListener("keydown",onKey);};
+  const onKey=e=>{if(e.key==="Escape")close();};
+  sc.onclick=close;dw.querySelector(".x").onclick=close;document.addEventListener("keydown",onKey);
+  document.body.append(sc,dw);dw.querySelector(".x").focus();
+}
+
+/* ---------- exports ---------- */
+function sheets(){
+  const data=allScores();
+  const dash=[["Guardian","Role","Status in "+S.year,"Service start","Service end","On roster from","On roster to",
+    "Days served","Proration",...REQ.flatMap(c=>[CATS[c].short+" pts",CATS[c].short+" target"]),
+    "Team dev pts","Diocese support pts","Total counted","Total logged","Result","Cap flags","Missing proof","Entries","Last activity"],
+    ...data.map(d=>[d.name,d.role,d.current?"Active":"Retired "+(d.member.end||""),d.member.start||"",d.member.end||"",
+      d.service.from||"",d.service.to||"",d.service.days,Math.round(d.service.fraction*1000)/1000,
+      ...REQ.flatMap(c=>[d.counted[c],d.targets[c]]),
+      d.counted.Team,d.counted.Diocese,d.total,ORDER.reduce((t,c)=>t+d.raw[c],0),
+      d.met?"Standards met":"Needs review",d.overCap,d.noProof,d.count,d.last||""])];
+
+  const eRows=data.flatMap(d=>d.rows.map(r=>[r.date,"Q"+qtrOf(r.date),d.name,d.role,r.activity,
+    CATS[r.cat]?CATS[r.cat].label:r.cat,r.pts,r.credit,r.capped?"Yes":"No",
+    r.outside?"Outside service window":"",r.proof||"",r.proof?"OK":"Missing",r.notes||"",r.ts||""]))
+    .sort((a,b)=>String(a[0]).localeCompare(String(b[0]))||String(a[2]).localeCompare(String(b[2])));
+  const entries=[["Date","Quarter","Guardian","Role","Activity","Category","Points awarded","Points counted",
+    "Over cap","Flag","Proof link","Proof status","Details","Recorded"],...eRows];
+
+  const detail=[["Guardian",...ORDER.map(c=>CATS[c].short+" pts"),"Total pts",
+    ...ORDER.map(c=>CATS[c].short+" entries"),"Total entries"],
+    ...data.map(d=>[d.name,...ORDER.map(c=>d.counted[c]),d.total,
+      ...ORDER.map(c=>d.rows.filter(r=>r.cat===c).length),d.count])];
+
+  const roster=[["Guardian","Role","Service start","Service end","Status","Served in "+S.year,"Total entries all years"],
+    ...S.roster.map(m=>[m.name,m.role,m.start||"",m.end||"",m.end?"Retired":"Active",
+      service(m,S.year).served?serviceLabel(m,S.year):"No",
+      S.entries.filter(e=>e.guardian===m.name).length])];
+
+  const hist=[["Guardian","Year","Status","On roster","Days served","Proration",
+    ...REQ.flatMap(c=>[CATS[c].short+" pts",CATS[c].short+" target"]),
+    "Team dev pts","Diocese support pts","Total","Entries","Result"]];
+  yearsOnFile().sort((a,b)=>a-b).forEach(y=>{
+    S.roster.forEach(m=>{const sv=service(m,y);const s=scoreGuardian(m.name,y);
+      if(!sv.served&&!s.count) return;
+      hist.push([m.name,y,m.end?"Retired":"Active",sv.served?serviceLabel(m,y):"Not on roster",sv.days,
+        Math.round(sv.fraction*1000)/1000,...REQ.flatMap(c=>[s.counted[c],s.targets[c]]),
+        s.counted.Team,s.counted.Diocese,s.total,s.count,
+        !sv.served?"Not on roster":s.met?"Standards met":"Needs review"]);});});
+
+  const cat=[["Activity","Category","Required category","Points","Cap group","Notes"],
+    ...CATALOG.map(a=>[a.name,CATS[a.cat].label,CATS[a.cat].required?"Yes":"Bonus",a.pts,a.cap||"",a.note])];
+
+  return {Dashboard:dash,Entries:entries,"Category Detail":detail,Roster:roster,"Year History":hist,"Point Values":cat};
+}
+const stamp=()=>`GSCC-Guardian-Training-${S.year}-${today()}`;
+function download(blob,fn){const u=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=u;a.download=fn;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);}
+
+function exportData(kind){
+  const sh=sheets();
+  if(kind==="csv"){
+    const cell=v=>{const s=String(v??"");return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
+    const out=Object.entries(sh).map(([n,r])=>`# ${n}\n`+r.map(row=>row.map(cell).join(",")).join("\n")).join("\n\n");
+    download(new Blob(["\ufeff"+out],{type:"text/csv;charset=utf-8"}),stamp()+".csv");
+    return toast("CSV downloaded.");
+  }
+  if(typeof XLSX==="undefined") return toast("Spreadsheet library did not load. Use CSV, or check your internet connection.");
+  if(kind==="xlsx"){
+    const wb=XLSX.utils.book_new();
+    Object.entries(sh).forEach(([n,r])=>XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(r),n));
+    XLSX.writeFile(wb,stamp()+".xlsx");
+    return toast("XLSX downloaded.");
+  }
+  if(kind==="xls"){
+    const tbl=r=>`<table>${r.map((row,i)=>`<tr>${row.map(c=>`<t${i?"d":"h"}>${esc(c)}</t${i?"d":"h"}>`).join("")}</tr>`).join("")}</table>`;
+    const names=Object.keys(sh);
+    const html=`<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8">
+      <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets>`+
+      names.map(n=>`<x:ExcelWorksheet><x:Name>${n}</x:Name><x:WorksheetOptions/></x:ExcelWorksheet>`).join("")+
+      `</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>`+
+      names.map(n=>tbl(sh[n])).join("<br>")+`</body></html>`;
+    download(new Blob(["\ufeff"+html],{type:"application/vnd.ms-excel"}),stamp()+".xls");
+    return toast("XLS downloaded.");
+  }
+}
+
+/* ---------- events ---------- */
+$$(".tab").forEach(t=>t.onclick=()=>{
+  $$(".tab").forEach(x=>x.setAttribute("aria-selected",x===t));
+  $$(".panel").forEach(p=>p.classList.toggle("on",p.id==="p-"+t.dataset.panel));});
+
+$("#fGuardian").onchange=()=>{paintShield($("#fGuardian").value);renderRecent();renderPreview();};
+$("#fActivity").onchange=renderPreview;
+$("#fDate").onchange=renderPreview;
+$("#meGuardian").onchange=renderMe;
+$("#yearSel").onchange=async e=>{S.year=+e.target.value;await Store.save();refresh();};
+
+$("#btnClear").onclick=()=>{$("#fActivity").value="";$("#fNotes").value="";$("#fProof").value="";
+  $("#fDate").valueAsDate=new Date();renderPreview();};
+
+$("#btnSave").onclick=async()=>{
+  const g=$("#fGuardian").value,id=$("#fActivity").value,d=$("#fDate").value;
+  if(!g) return toast("Select your name first.");
+  if(!id) return toast("Select a training activity.");
+  if(!d) return toast("Enter the date you completed the training.");
+  if(d>today()) return toast("That date is in the future. Enter the date you completed the training.");
+  if(yearOf(d)!==S.year) return toast(`That date is in ${yearOf(d)}. Switch the tracking year at the top right to record it.`);
+  const a=item(id);
+  S.entries.push({id:"e"+Date.now()+Math.random().toString(36).slice(2,6),guardian:g,activityId:id,
+    activity:a.name,cat:a.cat,pts:a.pts,date:d,notes:$("#fNotes").value.trim(),
+    proof:$("#fProof").value.trim(),ts:new Date().toISOString()});
+  await Store.save();
+  const s=scoreGuardian(g);
+  toast(`Recorded ${fmt(a.pts)} ${CATS[a.cat].short} point${a.pts===1?"":"s"}. ${CATS[a.cat].required?`${fmt(s.counted[a.cat])} of ${fmt(s.targets[a.cat])} this year.`:`${fmt(s.counted[a.cat])} bonus points this year.`}`);
+  $("#btnClear").click();refresh();
+};
+
+document.addEventListener("click",async e=>{
+  const th=e.target.closest("th[data-sort]");
+  if(th){const k=th.dataset.sort;sortDir=(k===sortKey)?-sortDir:1;sortKey=k;renderCommand();return;}
+  const row=e.target.closest("tr[data-open]");
+  if(row&&!e.target.closest("button,a,input")){openDrawer(row.dataset.open);return;}
+  const del=e.target.closest("[data-del]");
+  if(del){if(!confirm("Delete this entry? This cannot be undone."))return;
+    S.entries=S.entries.filter(x=>x.id!==del.dataset.del);await Store.save();toast("Entry deleted.");
+    $$(".scrim,.drawer").forEach(x=>x.remove());refresh();return;}
+  const rt=e.target.closest("[data-retire]");
+  if(rt){const m=S.roster[+rt.dataset.retire];
+    const d=prompt(`Last day of service for ${m.name}?\n\nTheir record and every year they served stay on file. Targets for that year are prorated to the days they served.`,today());
+    if(!d)return; if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return toast("Enter the date as YYYY-MM-DD.");
+    m.end=d;await Store.save();toast(`${m.name} retired as of ${pretty(d)}. Record retained.`);refresh();return;}
+  const ri=e.target.closest("[data-reinstate]");
+  if(ri){const m=S.roster[+ri.dataset.reinstate];m.end=null;await Store.save();
+    toast(`${m.name} reinstated.`);refresh();return;}
+  const pg=e.target.closest("[data-purge]");
+  if(pg&&!pg.disabled){const m=S.roster[+pg.dataset.purge];
+    if(!confirm(`Remove ${m.name} from the roster entirely?\n\nThis is only available because they have no training entries on file. Use Retire for anyone with a record.`))return;
+    S.roster.splice(+pg.dataset.purge,1);await Store.save();toast(`${m.name} removed.`);refresh();return;}
+  const ex=e.target.closest("[data-exp]");
+  if(ex) exportData(ex.dataset.exp);
+});
+
+document.addEventListener("change",async e=>{
+  const t=e.target;
+  if(t.dataset.role!==undefined){S.roster[+t.dataset.role].role=t.value.trim()||"‚Äî";await Store.save();refresh();return;}
+  if(t.dataset.start!==undefined){S.roster[+t.dataset.start].start=t.value||null;await Store.save();
+    toast("Service start updated. Targets recalculated.");refresh();return;}
+  if(t.dataset.end!==undefined){S.roster[+t.dataset.end].end=t.value||null;await Store.save();
+    toast("Service end updated. Targets recalculated.");refresh();return;}
+});
+
+$("#btnPin").onclick=()=>{
+  if($("#pin").value.trim()===CONFIG.accessCode){$("#cmdLock").style.display="none";$("#cmdBody").style.display="block";renderCommand();}
+  else toast("That code is not recognized.");};
+$("#pin").onkeydown=e=>{if(e.key==="Enter")$("#btnPin").click();};
+$("#cmdSearch").oninput=renderCommand;$("#cmdFilter").onchange=renderCommand;
+
+$$("[data-target]").forEach(el=>el.onchange=async()=>{
+  const v=parseFloat(el.value);if(isNaN(v)||v<0)return toast("Enter a number of 0 or more.");
+  S.targets[el.dataset.target]=v;await Store.save();refresh();});
+$$("[data-cap]").forEach(el=>el.onchange=async()=>{
+  const v=parseFloat(el.value);if(isNaN(v)||v<0)return toast("Enter a number of 0 or more.");
+  S.caps[el.dataset.cap]=v;await Store.save();refresh();});
+$("#enforce").onchange=async e=>{S.enforceCaps=e.target.value==="1";await Store.save();refresh();};
+$("#prorate").onchange=async e=>{S.prorate=e.target.value==="1";await Store.save();refresh();};
+
+$("#btnAddMember").onclick=async()=>{
+  const n=$("#newName").value.trim(),r=$("#newRole").value.trim()||"ART",st=$("#newStart").value||null;
+  if(!n)return toast("Enter the guardian's name as Last, First.");
+  if(S.roster.some(m=>m.name.toLowerCase()===n.toLowerCase()))return toast("That guardian is already on the roster.");
+  S.roster.push({name:n,role:r,start:st,end:null});await Store.save();
+  $("#newName").value="";$("#newRole").value="";
+  const tgt=st?REQ.map(c=>fmt(targetFor(c,{start:st,end:null},S.year))).join(" / "):null;
+  toast(tgt?`${n} added. ${S.year} targets prorated to ${tgt}.`:`${n} added with full-year targets.`);
+  refresh();};
+
+$("#btnWipe").onclick=async()=>{
+  const n=S.entries.filter(e=>yearOf(e.date)===S.year).length;
+  if(!n)return toast(`No entries recorded in ${S.year}.`);
+  if(!confirm(`Delete all ${n} entries for ${S.year}? The roster and every other year stay intact. This cannot be undone.`))return;
+  S.entries=S.entries.filter(e=>yearOf(e.date)!==S.year);await Store.save();
+  toast(`${S.year} entries deleted.`);refresh();};
+
+$("#btnSample").onclick=async()=>{
+  const ms=servedIn(S.year);const pick=a=>a[Math.floor(Math.random()*a.length)];const add=[];
+  ms.forEach((m,i)=>{
+    const sv=service(m,S.year);
+    const k=Math.round((i%5===0?2:9)*sv.fraction)+(i%7===0?0:1);
+    for(let j=0;j<k;j++){
+      const a=pick(CATALOG.filter(x=>CATS[x.cat].required||Math.random()<0.15));
+      const span=utc(sv.to)-utc(sv.from);
+      const d=iso(utc(sv.from)+Math.floor(Math.random()*(span+DAY)));
+      add.push({id:"e"+Date.now()+Math.random().toString(36).slice(2,8),guardian:m.name,activityId:a.id,
+        activity:a.name,cat:a.cat,pts:a.pts,date:d,notes:"Sample entry",
+        proof:Math.random()<0.7?"https://example.org/proof":"",ts:new Date().toISOString()});}});
+  S.entries=S.entries.concat(add);await Store.save();toast(`${add.length} sample entries loaded for ${S.year}.`);refresh();};
+
+/* ---------- boot ---------- */
+function refresh(){
+  fillSelects();renderPreview();renderRecent();renderMe();renderStandards();
+  paintShield($("#fGuardian").value);
+  if($("#cmdBody").style.display==="block")renderCommand();
+}
+function migrate(saved){
+  if(!saved) return null;
+  if(Array.isArray(saved.roster)) saved.roster=saved.roster.map(m=>{
+    if("active" in m && !("end" in m)) return {name:m.name,role:m.role,start:m.start||null,end:m.active?null:today()};
+    return {name:m.name,role:m.role,start:m.start||null,end:m.end||null};});
+  if(Array.isArray(saved.entries)) saved.entries=saved.entries.map(e=>
+    (e.cat==="Team"&&e.activityId==="t2")?{...e,cat:"Diocese",activityId:"d1"}:e);
+  return saved;
+}
+(async function init(){
+  const saved=migrate(await Store.load());
+  if(saved) S={...S,...saved,targets:{...S.targets,...(saved.targets||{})},caps:{...S.caps,...(saved.caps||{})},
+    prorate:saved.prorate!==undefined?saved.prorate:true};
+  $("#fDate").valueAsDate=new Date();$("#fDate").max=today();$("#newStart").value=today();
+  refresh();
+})();
+</script>
+</body>
+</html>
+
