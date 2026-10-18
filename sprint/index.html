@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Sprint Intervals</title>
+<meta name="description" content="Interval timer for sprint workouts">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sprints">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#111318">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{
+  --bg:#111318;
+  --card:#1B1E25;
+  --line:#2A2E37;
+  --ink:#F2F3F5;
+  --mute:#8B919C;
+  --accent:#FF453A;
+  --warmup:#FF9F0A;
+  --sprint:#FF453A;
+  --rest:#30D158;
+  --cooldown:#0A84FF;
+  --done:#BF5AF2;
+  --r:14px;
+  --safe-t:env(safe-area-inset-top);
+  --safe-b:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%}
+body{background:var(--bg);color:var(--ink);
+  font:400 16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+.num{font-variant-numeric:tabular-nums}
+.hidden{display:none!important}
+
+/* ---------- Setup screen ---------- */
+#setup{max-width:520px;margin:0 auto;padding:calc(var(--safe-t) + 18px) 16px calc(var(--safe-b) + 120px)}
+header h1{font-size:30px;font-weight:700;margin:0;letter-spacing:-.01em}
+header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
+.section-t{font-size:13px;font-weight:600;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin:22px 4px 8px}
+.card{background:var(--card);border-radius:var(--r);overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 16px;min-height:58px}
+.row + .row{border-top:1px solid var(--line)}
+.row .lbl{flex:1;min-width:0}
+.row .lbl b{display:block;font-weight:600;font-size:16px}
+.row .lbl small{display:block;color:var(--mute);font-size:12.5px}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.stepper{display:flex;align-items:center;gap:4px}
+.stepper button{width:40px;height:40px;border-radius:50%;background:#2A2E37;font-size:22px;line-height:1;font-weight:500}
+.stepper button:active{background:#3A3F4B}
+.stepper .val{min-width:62px;text-align:center;font-size:19px;font-weight:600}
+.toggle{position:relative;width:51px;height:31px;border-radius:16px;background:#3A3F4B;flex:none;transition:background .2s}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle[aria-checked="true"]{background:var(--rest)}
+.toggle[aria-checked="true"]::after{transform:translateX(20px)}
+
+.summary{display:flex;gap:10px;margin-top:4px}
+.summary div{flex:1;background:var(--card);border-radius:var(--r);padding:12px 14px}
+.summary b{display:block;font-size:24px;font-weight:700}
+.summary small{color:var(--mute);font-size:12.5px}
+
+.timeline{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;margin-top:10px}
+.timeline span{display:block;height:100%}
+
+.plan{font-size:14px}
+.plan .row{min-height:44px;padding:8px 16px}
+.plan .t{color:var(--mute)}
+
+.saved .row button.name{flex:1;text-align:left;font-weight:600}
+.saved .del{color:var(--mute);font-size:14px;padding:8px}
+.btn-secondary{width:100%;padding:14px;border-radius:var(--r);background:var(--card);font-weight:600;color:var(--cooldown);margin-top:10px}
+
+.startbar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(var(--safe-b) + 12px);
+  background:linear-gradient(transparent, var(--bg) 30%)}
+.startbar button{display:block;width:100%;max-width:520px;margin:0 auto;padding:18px;border-radius:18px;
+  background:var(--accent);color:#fff;font-size:19px;font-weight:700}
+.startbar button:active{filter:brightness(.9)}
+
+.note{color:var(--mute);font-size:13px;margin:10px 4px 0}
+
+/* ---------- Run screen ---------- */
+#run{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
+  padding:calc(var(--safe-t) + 14px) 20px calc(var(--safe-b) + 20px);
+  background:var(--phase-bg, var(--bg));transition:background .4s}
+#run .top{width:100%;display:flex;justify-content:space-between;align-items:center;color:rgba(255,255,255,.8);font-size:15px}
+#run .top button{padding:8px 4px;font-weight:600;color:#fff}
+#run .phase{margin-top:4vh;font-size:44px;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+#run .sub{font-size:18px;color:rgba(255,255,255,.85);min-height:25px}
+.ringwrap{position:relative;width:min(78vw,46vh);aspect-ratio:1;margin:3vh 0}
+.ringwrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ringwrap circle{fill:none;stroke-width:9}
+.ring-bg{stroke:rgba(255,255,255,.18)}
+.ring-fg{stroke:#fff;stroke-linecap:round}
+.clock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:min(21vw,13vh);font-weight:700;letter-spacing:-.02em}
+#run .next{font-size:16px;color:rgba(255,255,255,.85)}
+#run .bar{width:100%;max-width:480px;height:6px;border-radius:3px;background:rgba(255,255,255,.2);margin:14px 0 6px;overflow:hidden}
+#run .bar i{display:block;height:100%;background:#fff;width:0}
+#run .totals{width:100%;max-width:480px;display:flex;justify-content:space-between;font-size:14px;color:rgba(255,255,255,.8)}
+.controls{margin-top:auto;display:flex;gap:28px;align-items:center}
+.controls button{width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center}
+.controls button.main{width:88px;height:88px;background:#fff}
+.controls svg{width:26px;height:26px;fill:#fff}
+.controls .main svg{width:34px;height:34px;fill:#111}
+.controls button:active{transform:scale(.95)}
+</style>
+</head>
+<body>
+
+<!-- ======================= SETUP ======================= -->
+<main id="setup">
+  <header>
+    <h1>Sprint Intervals</h1>
+    <p>Set your workout, start the timer, keep your music playing.</p>
+  </header>
+
+  <div class="summary">
+    <div><b class="num" id="sumTotal">0:00</b><small>Total time</small></div>
+    <div><b class="num" id="sumSprints">0</b><small>Sprints</small></div>
+  </div>
+  <div class="timeline" id="timeline" aria-hidden="true"></div>
+
+  <div class="section-t">Intervals</div>
+  <div class="card" id="fields"></div>
+
+  <div class="section-t">Sounds</div>
+  <div class="card">
+    <div class="row"><div class="lbl"><b>Beeps</b><small>3-2-1 countdown and a tone at each change</small></div>
+      <button class="toggle" role="switch" data-opt="beeps" aria-label="Beeps"></button></div>
+    <div class="row"><div class="lbl"><b>Voice</b><small>Says “Sprint 3 of 8”, “Rest”, and so on</small></div>
+      <button class="toggle" role="switch" data-opt="voice" aria-label="Voice"></button></div>
+  </div>
+  <p class="note">Sounds play over Apple Music without stopping it. Leave the ring/silent switch on ring, or the beeps are muted.</p>
+
+  <div class="section-t">Saved workouts</div>
+  <div class="card saved" id="saved"></div>
+  <button class="btn-secondary" id="saveBtn">Save current settings…</button>
+
+  <div class="section-t">Plan</div>
+  <div class="card plan" id="plan"></div>
+</main>
+
+<div class="startbar" id="startbar"><button id="startBtn">Start workout</button></div>
+
+<!-- ======================= RUN ======================= -->
+<section id="run" class="hidden" aria-live="polite">
+  <div class="top">
+    <button id="endBtn">End</button>
+    <span class="num" id="runCount"></span>
+    <span style="width:34px"></span>
+  </div>
+  <div class="phase" id="runPhase">Warm-up</div>
+  <div class="sub" id="runSub"></div>
+  <div class="ringwrap">
+    <svg viewBox="0 0 100 100"><circle class="ring-bg" cx="50" cy="50" r="45"/><circle class="ring-fg" id="ring" cx="50" cy="50" r="45"/></svg>
+    <div class="clock num" id="runClock">0:00</div>
+  </div>
+  <div class="next" id="runNext"></div>
+  <div class="bar"><i id="runBar"></i></div>
+  <div class="totals num"><span id="runElapsed">0:00</span><span id="runLeft">-0:00</span></div>
+  <div class="controls">
+    <button id="prevBtn" aria-label="Previous interval"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
+    <button id="pauseBtn" class="main" aria-label="Pause"><svg viewBox="0 0 24 24" id="pauseIcon"></svg></button>
+    <button id="nextBtn" aria-label="Next interval"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
+  </div>
+</section>
+
+<script>
+(() => {
+  // ---------- Settings ----------
+  const DEFAULTS = {
+    warmup: 360, sprint: 30, rest: 90, perSet: 4, sets: 2, setRest: 60, cooldown: 300,
+    beeps: true, voice: true
+  };
+  const FIELDS = [
+    { key: 'warmup',   label: 'Warm-up',        hint: 'Before the first sprint',      step: 30, min: 0,  time: true, color: 'warmup' },
+    { key: 'sprint',   label: 'Sprint',         hint: 'Each work interval',           step: 5,  min: 5,  time: true, color: 'sprint' },
+    { key: 'rest',     label: 'Rest',           hint: 'Between sprints',              step: 5,  min: 0,  time: true, color: 'rest' },
+    { key: 'perSet',   label: 'Sprints per set', hint: 'Sprints in each group',       step: 1,  min: 1,  max: 30 },
+    { key: 'sets',     label: 'Sets',           hint: 'Number of groups',             step: 1,  min: 1,  max: 10 },
+    { key: 'setRest',  label: 'Extra set rest', hint: 'Added to the rest between sets', step: 15, min: 0, time: true, color: 'rest' },
+    { key: 'cooldown', label: 'Cooldown',       hint: 'After the last sprint',        step: 30, min: 0,  time: true, color: 'cooldown' },
+  ];
+  const TIME_KEYS = FIELDS.map(f => f.key);
+
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+  let cfg = Object.assign({}, DEFAULTS, store.get('sprint.cfg', {}));
+  let saved = store.get('sprint.saved', [
+    { name: '8 × 30s sprints (default)', cfg: pick(DEFAULTS) }
+  ]);
+
+  function pick(c) { const o = {}; TIME_KEYS.forEach(k => o[k] = c[k]); return o; }
+  const fmt = s => { s = Math.max(0, Math.round(s)); const m = Math.floor(s / 60); return m + ':' + String(s % 60).padStart(2, '0'); };
+  const fmtLong = s => s < 60 ? s + ' sec' : (s % 60 ? fmt(s) : (s / 60) + ' min');
+  const $ = id => document.getElementById(id);
+
+  // ---------- Build the list of intervals ----------
+  function buildPlan(c) {
+    const segs = [];
+    const total = c.perSet * c.sets;
+    if (c.warmup > 0) segs.push({ type: 'warmup', name: 'Warm-up', dur: c.warmup });
+    let n = 0;
+    for (let s = 1; s <= c.sets; s++) {
+      for (let i = 1; i <= c.perSet; i++) {
+        n++;
+        segs.push({ type: 'sprint', name: 'Sprint', dur: c.sprint, n, total, set: s });
+        if (n === total) break; // last sprint goes straight to cooldown
+        const setBreak = i === c.perSet;
+        const dur = c.rest + (setBreak ? c.setRest : 0);
+        if (dur > 0) segs.push({ type: 'rest', name: setBreak ? 'Set break' : 'Rest', dur, n, total, setBreak });
+      }
+    }
+    if (c.cooldown > 0) segs.push({ type: 'cooldown', name: 'Cooldown', dur: c.cooldown });
+    return segs;
+  }
+
+  // ---------- Setup UI ----------
+  function renderFields() {
+    $('fields').innerHTML = FIELDS.map(f => `
+      <div class="row">
+        ${f.color ? `<span class="dot" style="background:var(--${f.color})"></span>` : '<span class="dot"></span>'}
+        <div class="lbl"><b>${f.label}</b><small>${f.hint}</small></div>
+        <div class="stepper">
+          <button data-k="${f.key}" data-d="-1" aria-label="Decrease ${f.label}">−</button>
+          <span class="val num" id="v-${f.key}"></span>
+          <button data-k="${f.key}" data-d="1" aria-label="Increase ${f.label}">+</button>
+        </div>
+      </div>`).join('');
+    // Hold to repeat
+    $('fields').querySelectorAll('.stepper button').forEach(b => {
+      let t1, t2;
+      const stop = () => { clearTimeout(t1); clearInterval(t2); };
+      b.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        bump(b.dataset.k, +b.dataset.d);
+        t1 = setTimeout(() => { t2 = setInterval(() => bump(b.dataset.k, +b.dataset.d), 90); }, 400);
+      });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
+    });
+  }
+
+  function bump(key, dir) {
+    const f = FIELDS.find(x => x.key === key);
+    let v = cfg[key] + dir * f.step;
+    v = Math.max(f.min, Math.min(f.max ?? 3600, v));
+    if (v === cfg[key]) return;
+    cfg[key] = v;
+    store.set('sprint.cfg', cfg);
+    renderSummary();
+  }
+
+  function renderSummary() {
+    FIELDS.forEach(f => { $('v-' + f.key).textContent = f.time ? fmt(cfg[f.key]) : cfg[f.key]; });
+    const plan = buildPlan(cfg);
+    const total = plan.reduce((a, s) => a + s.dur, 0);
+    $('sumTotal').textContent = fmt(total);
+    $('sumSprints').textContent = cfg.perSet * cfg.sets;
+    $('timeline').innerHTML = plan.map(s => `<span style="flex:${s.dur};background:var(--${s.type})"></span>`).join('');
+    let t = 0;
+    $('plan').innerHTML = plan.map(s => {
+      const start = t; t += s.dur;
+      const label = s.type === 'sprint' ? `Sprint ${s.n} of ${s.total}` : s.name;
+      return `<div class="row"><span class="dot" style="background:var(--${s.type})"></span>
+        <div class="lbl">${label}</div><span class="num">${fmtLong(s.dur)}</span>
+        <span class="t num" style="width:52px;text-align:right">${fmt(start)}</span></div>`;
+    }).join('');
+    document.querySelectorAll('.toggle').forEach(t => t.setAttribute('aria-checked', !!cfg[t.dataset.opt]));
+  }
+
+  function renderSaved() {
+    $('saved').innerHTML = saved.length ? saved.map((w, i) => `
+      <div class="row"><button class="name" data-load="${i}">${escapeHtml(w.name)}
+        <small style="display:block;color:var(--mute);font-weight:400">${describe(w.cfg)}</small></button>
+        <button class="del" data-del="${i}" aria-label="Delete ${escapeHtml(w.name)}">Delete</button></div>`).join('')
+      : '<div class="row"><div class="lbl"><small>No saved workouts yet.</small></div></div>';
+  }
+  const describe = c => `${c.perSet * c.sets} × ${fmtLong(c.sprint)} / ${fmtLong(c.rest)} rest · ${fmt(buildPlan(c).reduce((a, s) => a + s.dur, 0))}`;
+  const escapeHtml = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+
+  $('saved').addEventListener('click', e => {
+    const load = e.target.closest('[data-load]'), del = e.target.closest('[data-del]');
+    if (load) {
+      Object.assign(cfg, saved[+load.dataset.load].cfg);
+      store.set('sprint.cfg', cfg);
+      renderSummary();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (del && confirm(`Delete “${saved[+del.dataset.del].name}”?`)) {
+      saved.splice(+del.dataset.del, 1);
+      store.set('sprint.saved', saved);
+      renderSaved();
+    }
+  });
+  $('saveBtn').addEventListener('click', () => {
+    const name = prompt('Name this workout', `${cfg.perSet * cfg.sets} × ${fmtLong(cfg.sprint)} sprints`);
+    if (!name) return;
+    saved.push({ name: name.trim(), cfg: pick(cfg) });
+    store.set('sprint.saved', saved);
+    renderSaved();
+  });
+  document.querySelectorAll('.toggle').forEach(t => t.addEventListener('click', () => {
+    cfg[t.dataset.opt] = !cfg[t.dataset.opt];
+    store.set('sprint.cfg', cfg);
+    renderSummary();
+    if (t.dataset.opt === 'beeps' && cfg.beeps) { unlockAudio(); beep(880, 0.15); }
+    if (t.dataset.opt === 'voice' && cfg.voice) say('Voice on');
+  }));
+
+  // ---------- Audio ----------
+  // "ambient" mixes our sounds with Apple Music instead of pausing it (Safari 16.4+).
+  try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch {}
+  let ctx;
+  function unlockAudio() {
+    try {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state !== 'running') ctx.resume();
+      // A silent blip inside the tap unlocks audio on iOS.
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      g.gain.value = 0; o.connect(g).connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.01);
+    } catch {}
+    if (cfg.voice && 'speechSynthesis' in window) {
+      try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch {}
+    }
+  }
+  function beep(freq, dur, when = 0, vol = 0.5) {
+    if (!cfg.beeps || !ctx) return;
+    try {
+      const t = ctx.currentTime + when;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + dur + 0.02);
+    } catch {}
+  }
+  function say(text) {
+    if (!cfg.voice || !('speechSynthesis' in window)) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 1.05; u.volume = 1;
+      speechSynthesis.speak(u);
+    } catch {}
+  }
+  function cueStart(seg) {
+    if (seg.type === 'sprint') { beep(1320, 0.18); beep(1320, 0.35, 0.22); }
+    else if (seg.type === 'rest') beep(660, 0.45);
+    else beep(880, 0.4);
+    const text = {
+      warmup: `Warm up, ${fmtLong(seg.dur)}`,
+      sprint: seg.n === seg.total ? 'Last sprint. Go!' : `Sprint ${seg.n} of ${seg.total}. Go!`,
+      rest: seg.setBreak ? `Set break, ${fmtLong(seg.dur)}` : `Rest, ${fmtLong(seg.dur)}`,
+      cooldown: `Cool down, ${fmtLong(seg.dur)}`
+    }[seg.type];
+    say(text);
+  }
+
+  // ---------- Keep the screen on ----------
+  let wakeLock = null;
+  async function lockScreen() {
+    try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => wakeLock = null); } } catch {}
+  }
+  function unlockScreen() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; }
+
+  // ---------- Timer engine ----------
+  // Uses wall-clock end times, so it stays accurate even if the phone throttles the page.
+  const R = 45, CIRC = 2 * Math.PI * R;
+  $('ring').style.strokeDasharray = CIRC;
+  let plan = [], idx = 0, segEnd = 0, remainingMs = 0, paused = false, running = false, raf = 0, iv = 0, lastBeepSec = null, totalDur = 0;
+
+  function start() {
+    unlockAudio();
+    plan = buildPlan(cfg);
+    if (!plan.length) return;
+    totalDur = plan.reduce((a, s) => a + s.dur, 0);
+    running = true; paused = false;
+    $('setup').classList.add('hidden'); $('startbar').classList.add('hidden'); $('run').classList.remove('hidden');
+    lockScreen();
+    enter(0);
+    loop();
+    iv = setInterval(tick, 200);
+  }
+
+  function enter(i, silent) {
+    idx = i;
+    const seg = plan[idx];
+    remainingMs = seg.dur * 1000;
+    segEnd = performance.now() + remainingMs;
+    lastBeepSec = null;
+    if (!silent) cueStart(seg);
+    paint();
+  }
+
+  function finish() {
+    running = false;
+    clearInterval(iv); cancelAnimationFrame(raf);
+    beep(880, 0.2); beep(1100, 0.2, 0.22); beep(1320, 0.5, 0.44);
+    say('Workout complete. Nice work!');
+    $('run').style.setProperty('--phase-bg', 'var(--done)');
+    $('runPhase').textContent = 'Done';
+    $('runSub').textContent = `${plan.filter(s => s.type === 'sprint').length} sprints · ${fmt(totalDur)}`;
+    $('runClock').textContent = '0:00';
+    $('ring').style.strokeDashoffset = 0;
+    $('runNext').textContent = 'Tap End to go back';
+    $('runBar').style.width = '100%';
+    $('runElapsed').textContent = fmt(totalDur); $('runLeft').textContent = '-0:00';
+    setPauseIcon(true);
+    unlockScreen();
+  }
+
+  function tick() {
+    if (!running || paused) return;
+    const now = performance.now();
+    // Catch up if the page was suspended past one or more interval ends.
+    let advanced = false;
+    while (now >= segEnd) {
+      if (idx >= plan.length - 1) { finish(); return; }
+      idx++;
+      segEnd += plan[idx].dur * 1000;
+      lastBeepSec = null;
+      advanced = true;
+    }
+    if (advanced) cueStart(plan[idx]);
+    remainingMs = segEnd - now;
+    const secLeft = Math.ceil(remainingMs / 1000);
+    if (secLeft <= 3 && secLeft >= 1 && secLeft !== lastBeepSec && plan[idx].dur > 3) {
+      lastBeepSec = secLeft;
+      beep(secLeft === 1 ? 990 : 880, 0.12, 0, 0.45);
+    }
+    paint();
+  }
+
+  function loop() { tick(); if (running) raf = requestAnimationFrame(loop); }
+
+  function paint() {
+    const seg = plan[idx];
+    const left = remainingMs / 1000;
+    $('run').style.setProperty('--phase-bg', `var(--${seg.type})`);
+    $('runPhase').textContent = seg.type === 'sprint' ? 'Sprint' : seg.name;
+    $('runSub').textContent = seg.type === 'sprint' ? `${seg.n} of ${seg.total}`
+      : seg.type === 'rest' ? `${seg.n} of ${seg.total} done${seg.setBreak ? ' · set ' + (plan[idx + 1]?.set ?? '') + ' next' : ''}` : '';
+    $('runCount').textContent = `Sprints ${plan.slice(0, idx + 1).filter(s => s.type === 'sprint').length}/${plan.filter(s => s.type === 'sprint').length}`;
+    $('runClock').textContent = fmt(Math.ceil(left - 0.001));
+    $('ring').style.strokeDashoffset = CIRC * (1 - left / seg.dur);
+    const nxt = plan[idx + 1];
+    $('runNext').textContent = nxt ? `Next: ${nxt.type === 'sprint' ? 'Sprint ' + nxt.n : nxt.name} · ${fmtLong(nxt.dur)}` : 'Last interval';
+    const before = plan.slice(0, idx).reduce((a, s) => a + s.dur, 0);
+    const elapsed = before + (seg.dur - left);
+    $('runBar').style.width = (elapsed / totalDur * 100) + '%';
+    $('runElapsed').textContent = fmt(elapsed);
+    $('runLeft').textContent = '-' + fmt(totalDur - elapsed);
+  }
+
+  const PAUSE_SVG = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>', PLAY_SVG = '<path d="M7 4v16l13-8z"/>';
+  function setPauseIcon(showPlay) {
+    $('pauseIcon').innerHTML = showPlay ? PLAY_SVG : PAUSE_SVG;
+    $('pauseBtn').setAttribute('aria-label', showPlay ? 'Resume' : 'Pause');
+  }
+
+  function togglePause() {
+    if (!running) return;
+    unlockAudio();
+    if (paused) {
+      paused = false;
+      segEnd = performance.now() + remainingMs;
+      lockScreen();
+    } else {
+      tick();
+      paused = true;
+    }
+    setPauseIcon(paused);
+    $('runPhase').textContent = paused ? 'Paused' : (plan[idx].type === 'sprint' ? 'Sprint' : plan[idx].name);
+  }
+
+  function jump(delta) {
+    if (!running) return;
+    const target = idx + delta;
+    if (target < 0) { enter(0); }
+    else if (target >= plan.length) { finish(); return; }
+    else enter(target);
+    if (paused) { setPauseIcon(true); $('runPhase').textContent = 'Paused'; }
+  }
+
+  function end() {
+    if (running && !confirm('End this workout?')) return;
+    running = false; paused = false;
+    clearInterval(iv); cancelAnimationFrame(raf);
+    try { speechSynthesis.cancel(); } catch {}
+    unlockScreen();
+    $('run').classList.add('hidden'); $('setup').classList.remove('hidden'); $('startbar').classList.remove('hidden');
+  }
+
+  $('startBtn').addEventListener('click', start);
+  $('pauseBtn').addEventListener('click', togglePause);
+  $('prevBtn').addEventListener('click', () => {
+    // First tap restarts the current interval; tap again within 2s to go back one.
+    const seg = plan[idx];
+    jump(seg && seg.dur - remainingMs / 1000 > 2 ? 0 : -1);
+  });
+  $('nextBtn').addEventListener('click', () => jump(1));
+  $('endBtn').addEventListener('click', end);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && running) { lockScreen(); if (ctx && ctx.state !== 'running') ctx.resume(); tick(); }
+  });
+
+  setPauseIcon(false);
+  renderFields();
+  renderSummary();
+  renderSaved();
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
