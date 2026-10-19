@@ -431,18 +431,44 @@ const CATALOG = [
   {id:"d1",cat:"Diocese",name:"Diocese Volunteer Event",pts:2,note:"For example, working the Nolan football game"}
 ];
 
+/* Roster as of the Guardian Team 2026 workbook (Armed Guardian Team sheet), 10/19/2026.
+   [name, role, service start, service end] — null start = served since before records began. */
 const ROSTER = [
   ["Hesselgrave, Mark","Training Coordinator"],["Perone, John","Team Lead"],["Cochran, Jerry","ART"],
   ["Johansson, Ronald","Team Lead"],["Buttry, Jimmy","ART"],["Balser, Roger","ART"],["Migliaccio, Ken","ART"],
   ["Morton, John","ART"],["Sakovich, Peter","Medical Team Lead"],["Falcon, Bruce","ART"],
   ["Weimholt, Brendan","ART"],["Calhoun, Greg","Team Lead"],["Weisenfels, Louis","ART"],["Lippies, Randy","ART"],
-  ["Bunn, Zac","Team Lead"],["Bertrand, Carlos","ART"],["Gustafson, Chris","Team Lead"],["Parten, Luke","ART"],
+  ["Bunn, Zac","Team Lead"],["Gustafson, Chris","Team Lead"],["Parten, Luke","ART"],
   ["Via, Wayne","Team Lead"],["Deichert, Jeff","ART"],["Brieger, John","Team Lead"],["Alegria, David","Team Lead"],
-  ["Deras, Franco","ART"],["Matteson, Ray","ART"],["Schultz, Garth","ART"],["Stregles, Dwan","ART"],
+  ["Deras, Franco","ART"],["Matteson, Ray","ART"],["Stregles, Dwan","ART"],
   ["Javier, Raymond","ART"],["Johnson, Michael","ART"],["Hawthorne, David","Coordinator"],["Crouch, Jared","ART"],
   ["Sudduth, James","ART"],["Lopez, David","ART"],["Clower, Toby","ART"],["Treadway, James","ART"],
-  ["Roldan, Pedro","ART"],["Miller, Michael","ART"],["Higgins, Collin","ART"],["Licata, Joe","ART"]
-].map(([name,role])=>({name,role,start:null,end:null}));
+  ["Roldan, Pedro","ART"],["Miller, Michael","ART"],["Higgins, Collin","ART"],["Licata, Joe","ART"],
+  ["Nolan, Roger","ART","2022-09-10"],["Rycroft, Zachary","ART","2026-10-07"],["Hamilton, James","ART - LEO","2026-10-10"],
+  ["Bertrand, Carlos","ART",null,"2026-10-19"],["Schultz, Garth","ART",null,"2026-10-19"]
+].map(([name,role,start=null,end=null])=>({name,role,start,end}));
+
+/* Roster changes applied once to data that is already saved (browser or API), so an
+   existing tracker picks up the new list without losing entries. Retire never deletes. */
+const ROSTER_UPDATES = [
+  {id:"2026-10-19-guardian-team-list",
+   add:[{name:"Nolan, Roger",role:"ART",start:"2022-09-10"},
+        {name:"Rycroft, Zachary",role:"ART",start:"2026-10-07"},
+        {name:"Hamilton, James",role:"ART - LEO",start:"2026-10-10"}],
+   retire:[{name:"Bertrand, Carlos",end:"2026-10-19"},{name:"Schultz, Garth",end:"2026-10-19"}]}
+];
+function applyRosterUpdates(){
+  S.rosterApplied=Array.isArray(S.rosterApplied)?S.rosterApplied:[];
+  const find=n=>S.roster.find(m=>m.name.toLowerCase()===n.toLowerCase());
+  let changed=false;
+  ROSTER_UPDATES.forEach(u=>{
+    if(S.rosterApplied.includes(u.id)) return;
+    (u.add||[]).forEach(a=>{ if(!find(a.name)) S.roster.push({name:a.name,role:a.role,start:a.start||null,end:null}); });
+    (u.retire||[]).forEach(r=>{ const m=find(r.name); if(m&&!m.end) m.end=r.end; });
+    S.rosterApplied.push(u.id); changed=true;
+  });
+  return changed;
+}
 
 let S = {
   year: new Date().getFullYear(),
@@ -589,8 +615,11 @@ function paintShield(name){
 
 /* ---------- selects & form ---------- */
 function fillSelects(){
-  const names=servedIn(S.year).map(m=>m.name).sort((a,b)=>a.localeCompare(b));
-  ["#fGuardian","#meGuardian"].forEach(sel=>{
+  const served=servedIn(S.year);
+  const allNames=served.map(m=>m.name).sort((a,b)=>a.localeCompare(b));
+  /* Retired members are hidden from Log training; My record still lists them so they can view their history. */
+  const activeNames=served.filter(isCurrent).map(m=>m.name).sort((a,b)=>a.localeCompare(b));
+  [["#fGuardian",activeNames],["#meGuardian",allNames]].forEach(([sel,names])=>{
     const el=$(sel),cur=el.value;
     el.innerHTML=`<option value="">Select your name...</option>`+names.map(n=>{
       const m=memberOf(n); return `<option>${esc(n)}</option>`;}).join("");
@@ -784,7 +813,7 @@ function renderCommand(){
     ["overCap","Cap flags","num"],["count","Entries","num"],["last","Last activity",""]];
 
   $("#cmdTable").innerHTML=rows.length?`<div class="tbl-wrap"><table><thead><tr>`+
-    cols.map(([k,l,c])=>`<th class="${c}" data-sort="${k}">${l}${sortKey===k?(sortDir>0?" ‚ñ≤":" ‚ñº"):""}</th>`).join("")+
+    cols.map(([k,l,c])=>`<th class="${c}" data-sort="${k}">${l}${sortKey===k?(sortDir>0?" ▲":" ▼"):""}</th>`).join("")+
     `</tr></thead><tbody>`+rows.map(d=>`<tr class="clickable ${d.current?"":"former"}" data-open="${esc(d.name)}">
       <td class="name">${esc(d.name)}${d.current?"":` <span class="pill past">Former</span>`}</td>
       <td class="dim">${esc(d.role)}</td>
@@ -849,7 +878,7 @@ function openDrawer(name){
   const dw=document.createElement("aside");dw.className="drawer";dw.setAttribute("role","dialog");dw.setAttribute("aria-modal","true");
   dw.innerHTML=`<div class="drawer-head"><div><h2>${esc(name)}</h2>
     <div class="role">${esc(s.role)} - ${S.year} - ${serviceLabel(s.member,S.year)}</div></div>
-    <button class="x" aria-label="Close">‚úï</button></div>
+    <button class="x" aria-label="Close">✕</button></div>
     <div class="drawer-body">${guardianDetailHTML(s,true)}</div>`;
   const close=()=>{sc.remove();dw.remove();document.removeEventListener("keydown",onKey);};
   const onKey=e=>{if(e.key==="Escape")close();};
@@ -1070,6 +1099,7 @@ function migrate(saved){
   const saved=migrate(await Store.load());
   if(saved) S={...S,...saved,targets:{...S.targets,...(saved.targets||{})},caps:{...S.caps,...(saved.caps||{})},
     prorate:saved.prorate!==undefined?saved.prorate:true};
+  if(applyRosterUpdates()) await Store.save();
   $("#fDate").valueAsDate=new Date();$("#fDate").max=today();$("#newStart").value=today();
   refresh();
 })();
