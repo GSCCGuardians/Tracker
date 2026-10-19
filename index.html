@@ -185,6 +185,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
 </nav>
 
 <main class="wrap">
+<div id="dbBanner" class="note" role="alert" style="display:none;margin-bottom:16px;border-left-color:var(--alert);background:#FBF2F2;color:var(--alert);font-weight:600"></div>
 
 <section class="panel on" id="p-log">
   <div class="cols">
@@ -296,7 +297,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
     <p class="sub">Enter the coordinator code to open the command dashboard.</p>
     <div class="field"><label for="pin">Access code</label><input type="password" id="pin" autocomplete="off"></div>
     <button class="btn" id="btnPin">Open dashboard</button>
-    <p class="hint" style="margin-top:12px">This code hides the dashboard from casual view. It is not a substitute for real security - see the deployment notes.</p>
+    <p class="hint" style="margin-top:12px">The code is checked by the tracker's Google service, not by this page.</p>
   </div>
 
   <div id="cmdBody" style="display:none">
@@ -391,9 +392,12 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
    CONFIGURATION - edit these before you deploy
    ===================================================================== */
 const CONFIG = {
-  accessCode : "GSCC_Tr@cking!",
-  apiUrl     : "https://script.google.com/macros/s/AKfycbxJX7OIoIwdpkU_iInKbY0yOzsUhbqVQ4w_P0sD4jKLgIc9Qofl_MO4n7D8dSb854q0kg/exec",
-  storageKey : "gscc-guardian-tracker-v1"
+  // Address of the Google Apps Script web app (Deploy → Manage deployments → Web app URL).
+  // The Command code is checked by that script; it is not stored in this page.
+  apiUrl        : "https://script.google.com/macros/s/AKfycbwOfle1gVBkoke3MacifLdRycEidP98X82YFqI8wKU-S8PY9NdswO2pWIe0KFzBr_mS4Q/exec",
+  // Only used for offline testing when apiUrl is blank (data then stays in this browser).
+  localTestCode : "2026",
+  storageKey    : "gscc-guardian-tracker-v1"
 };
 /* ===================================================================== */
 
@@ -480,23 +484,66 @@ let S = {
   entries:[]
 };
 
-/* ---------- storage ---------- */
+/* ---------- storage ----------
+   With apiUrl set, all data lives in the Google Sheet behind the Apps Script.
+   Every change is sent as one small request (add entry, delete entry, update
+   roster, ...) and the script returns the fresh shared data, so two people
+   saving at the same time never overwrite each other. Nothing is kept in the
+   browser in that mode. With apiUrl blank, the app runs in local test mode. */
+const API=!!CONFIG.apiUrl;
+let ADMIN=null;          // coordinator code, held in memory only after it is verified
+let DB_INIT=true;        // false until the coordinator opens Command the first time
 const Store = {
   async load(){
-    try{ if(CONFIG.apiUrl){const r=await fetch(CONFIG.apiUrl);const d=await r.json();if(d&&d.roster)return d;} }
-    catch(e){ console.warn("API load failed; falling back to local data.",e); }
-    try{ if(window.storage){const r=await window.storage.get(CONFIG.storageKey,true);if(r&&r.value)return JSON.parse(r.value);} }catch(e){}
+    if(API){
+      const r=await fetch(CONFIG.apiUrl+(CONFIG.apiUrl.includes("?")?"&":"?")+"t="+Date.now());
+      const d=await r.json();
+      if(!d.ok) throw new Error(d.error||"Load failed");
+      return d.data;
+    }
     try{ const raw=localStorage.getItem(CONFIG.storageKey); if(raw) return JSON.parse(raw); }catch(e){}
     return null;
   },
-  async save(){
-    const json=JSON.stringify(S);
-    try{ if(CONFIG.apiUrl) await fetch(CONFIG.apiUrl,{method:"POST",headers:{"Content-Type":"application/json"},body:json}); }
-    catch(e){ console.warn("API save failed.",e); }
-    try{ if(window.storage) await window.storage.set(CONFIG.storageKey,json,true); }catch(e){}
-    try{ localStorage.setItem(CONFIG.storageKey,json); }catch(e){}
+  async post(action,payload,code){
+    // text/plain keeps this a "simple" request, which Google's servers accept from another website
+    const r=await fetch(CONFIG.apiUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify({action,payload,code})});
+    return r.json();
   }
 };
+function settingsOf(){return {targets:S.targets,caps:S.caps,enforceCaps:S.enforceCaps,prorate:S.prorate};}
+function applyServer(d){
+  DB_INIT=!!d.initialized;
+  if(d.initialized){
+    S.roster=(d.roster||[]).map(m=>({name:m.name,role:m.role||"-",start:m.start||null,end:m.end||null}));
+    const st=d.settings||{};
+    if(st.targets) S.targets={...S.targets,...st.targets};
+    if(st.caps) S.caps={...S.caps,...st.caps};
+    if(st.enforceCaps!==undefined) S.enforceCaps=!!st.enforceCaps;
+    if(st.prorate!==undefined) S.prorate=!!st.prorate;
+  }
+  S.entries=d.entries||[];
+  banner("");
+}
+function banner(msg){const b=$("#dbBanner");b.textContent=msg;b.style.display=msg?"block":"none";}
+async function reload(){
+  try{ applyServer(await Store.load()); }
+  catch(e){ banner("Can't reach the tracker database right now. Training can't be recorded until the connection is back — please try again shortly."); }
+  refresh();
+}
+/* Send one change. Returns true when it was saved. On failure the screen is
+   reloaded from the shared data so it never shows something that wasn't saved. */
+async function sync(action,payload,admin){
+  if(!API){ try{ localStorage.setItem(CONFIG.storageKey,JSON.stringify(S)); }catch(e){} return true; }
+  try{
+    const d=await Store.post(action,payload,admin?ADMIN:undefined);
+    if(!d.ok){ toast(d.error||"That change could not be saved."); await reload(); return false; }
+    applyServer(d.data); return true;
+  }catch(e){
+    toast("Could not reach the tracker database. Check your connection and try again.");
+    await reload(); return false;
+  }
+}
 
 /* ---------- helpers ---------- */
 const MAX_PROOF_BYTES=15*1024*1024; // 15 MB
@@ -974,7 +1021,7 @@ $("#fGuardian").onchange=()=>{paintShield($("#fGuardian").value);renderRecent();
 $("#fActivity").onchange=renderPreview;
 $("#fDate").onchange=renderPreview;
 $("#meGuardian").onchange=renderMe;
-$("#yearSel").onchange=async e=>{S.year=+e.target.value;await Store.save();refresh();};
+$("#yearSel").onchange=e=>{S.year=+e.target.value;refresh();};
 
 $("#btnClear").onclick=()=>{$("#fActivity").value="";$("#fNotes").value="";$("#fProof").value="";
   $("#fDate").valueAsDate=new Date();renderPreview();};
@@ -989,12 +1036,17 @@ $("#btnSave").onclick=async()=>{
   if(yearOf(d)!==S.year) return toast(`That date is in ${yearOf(d)}. Switch the tracking year at the top right to record it.`);
   const file=$("#fProof").files[0];
   if(file&&file.size>MAX_PROOF_BYTES) return toast("That file is too large (15 MB max). Try a smaller photo or a scanned PDF.");
-  const proof=file?await fileToDataURL(file):"";
+  const btn=$("#btnSave");btn.disabled=true;btn.textContent=file?"Uploading…":"Saving…";
+  try{
+    const proof=file?await fileToDataURL(file):"";
+    const a=item(id);
+    const entry={id:"e"+Date.now()+Math.random().toString(36).slice(2,6),guardian:g,activityId:id,
+      activity:a.name,cat:a.cat,pts:a.pts,date:d,notes:$("#fNotes").value.trim(),
+      proof,proofName:file?file.name:"",ts:new Date().toISOString()};
+    S.entries.push(entry);
+    if(!await sync("addEntry",{entry})) return;
+  } finally { btn.disabled=false;btn.textContent="Record training"; }
   const a=item(id);
-  S.entries.push({id:"e"+Date.now()+Math.random().toString(36).slice(2,6),guardian:g,activityId:id,
-    activity:a.name,cat:a.cat,pts:a.pts,date:d,notes:$("#fNotes").value.trim(),
-    proof,proofName:file?file.name:"",ts:new Date().toISOString()});
-  await Store.save();
   const s=scoreGuardian(g);
   toast(`Recorded ${fmt(a.pts)} ${CATS[a.cat].short} point${a.pts===1?"":"s"}. ${CATS[a.cat].required?`${fmt(s.counted[a.cat])} of ${fmt(s.targets[a.cat])} this year.`:`${fmt(s.counted[a.cat])} bonus points this year.`}`);
   $("#btnClear").click();refresh();
@@ -1007,53 +1059,68 @@ document.addEventListener("click",async e=>{
   if(row&&!e.target.closest("button,a,input")){openDrawer(row.dataset.open);return;}
   const del=e.target.closest("[data-del]");
   if(del){if(!confirm("Delete this entry? This cannot be undone."))return;
-    S.entries=S.entries.filter(x=>x.id!==del.dataset.del);await Store.save();toast("Entry deleted.");
+    const id=del.dataset.del;S.entries=S.entries.filter(x=>x.id!==id);
+    if(!await sync("deleteEntry",{id},true))return;toast("Entry deleted.");
     $$(".scrim,.drawer").forEach(x=>x.remove());refresh();return;}
   const rt=e.target.closest("[data-retire]");
   if(rt){const m=S.roster[+rt.dataset.retire];
     const d=prompt(`Last day of service for ${m.name}?\n\nTheir record and every year they served stay on file. Targets for that year are prorated to the days they served.`,today());
     if(!d)return; if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return toast("Enter the date as YYYY-MM-DD.");
-    m.end=d;await Store.save();toast(`${m.name} retired as of ${pretty(d)}. Record retained.`);refresh();return;}
+    m.end=d;if(!await sync("setRoster",{roster:S.roster},true))return;toast(`${m.name} retired as of ${pretty(d)}. Record retained.`);refresh();return;}
   const ri=e.target.closest("[data-reinstate]");
-  if(ri){const m=S.roster[+ri.dataset.reinstate];m.end=null;await Store.save();
+  if(ri){const m=S.roster[+ri.dataset.reinstate];m.end=null;if(!await sync("setRoster",{roster:S.roster},true))return;
     toast(`${m.name} reinstated.`);refresh();return;}
   const pg=e.target.closest("[data-purge]");
   if(pg&&!pg.disabled){const m=S.roster[+pg.dataset.purge];
     if(!confirm(`Remove ${m.name} from the roster entirely?\n\nThis is only available because they have no training entries on file. Use Retire for anyone with a record.`))return;
-    S.roster.splice(+pg.dataset.purge,1);await Store.save();toast(`${m.name} removed.`);refresh();return;}
+    S.roster.splice(+pg.dataset.purge,1);if(!await sync("setRoster",{roster:S.roster},true))return;toast(`${m.name} removed.`);refresh();return;}
   const ex=e.target.closest("[data-exp]");
   if(ex) exportData(ex.dataset.exp);
 });
 
 document.addEventListener("change",async e=>{
   const t=e.target;
-  if(t.dataset.role!==undefined){S.roster[+t.dataset.role].role=t.value.trim()||"-";await Store.save();refresh();return;}
-  if(t.dataset.start!==undefined){S.roster[+t.dataset.start].start=t.value||null;await Store.save();
+  if(t.dataset.role!==undefined){S.roster[+t.dataset.role].role=t.value.trim()||"-";if(!await sync("setRoster",{roster:S.roster},true))return;refresh();return;}
+  if(t.dataset.start!==undefined){S.roster[+t.dataset.start].start=t.value||null;if(!await sync("setRoster",{roster:S.roster},true))return;
     toast("Service start updated. Targets recalculated.");refresh();return;}
-  if(t.dataset.end!==undefined){S.roster[+t.dataset.end].end=t.value||null;await Store.save();
+  if(t.dataset.end!==undefined){S.roster[+t.dataset.end].end=t.value||null;if(!await sync("setRoster",{roster:S.roster},true))return;
     toast("Service end updated. Targets recalculated.");refresh();return;}
 });
 
-$("#btnPin").onclick=()=>{
-  if($("#pin").value.trim()===CONFIG.accessCode){$("#cmdLock").style.display="none";$("#cmdBody").style.display="block";renderCommand();}
-  else toast("That code is not recognized.");};
+function openCommand(){$("#pin").value="";$("#cmdLock").style.display="none";$("#cmdBody").style.display="block";renderCommand();}
+$("#btnPin").onclick=async()=>{
+  const code=$("#pin").value.trim();
+  if(!code) return toast("Enter the coordinator code.");
+  if(!API){ if(code===CONFIG.localTestCode) openCommand(); else toast("That code is not recognized."); return; }
+  const btn=$("#btnPin");btn.disabled=true;
+  try{
+    const d=await Store.post("verify",{},code);
+    if(!d.ok) return toast(d.error||"That code is not recognized.");
+    ADMIN=code;
+    if(!DB_INIT){   // first time: save the built-in roster and settings to the shared Sheet
+      if(await sync("init",{roster:S.roster,settings:settingsOf()},true)) toast("Tracker database set up with the current roster.");
+    }
+    openCommand();
+  }catch(e){ toast("Could not reach the tracker database. Check your connection and try again."); }
+  finally{ btn.disabled=false; }
+};
 $("#pin").onkeydown=e=>{if(e.key==="Enter")$("#btnPin").click();};
 $("#cmdSearch").oninput=renderCommand;$("#cmdFilter").onchange=renderCommand;
 
 $$("[data-target]").forEach(el=>el.onchange=async()=>{
   const v=parseFloat(el.value);if(isNaN(v)||v<0)return toast("Enter a number of 0 or more.");
-  S.targets[el.dataset.target]=v;await Store.save();refresh();});
+  S.targets[el.dataset.target]=v;if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();});
 $$("[data-cap]").forEach(el=>el.onchange=async()=>{
   const v=parseFloat(el.value);if(isNaN(v)||v<0)return toast("Enter a number of 0 or more.");
-  S.caps[el.dataset.cap]=v;await Store.save();refresh();});
-$("#enforce").onchange=async e=>{S.enforceCaps=e.target.value==="1";await Store.save();refresh();};
-$("#prorate").onchange=async e=>{S.prorate=e.target.value==="1";await Store.save();refresh();};
+  S.caps[el.dataset.cap]=v;if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();});
+$("#enforce").onchange=async e=>{S.enforceCaps=e.target.value==="1";if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();};
+$("#prorate").onchange=async e=>{S.prorate=e.target.value==="1";if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();};
 
 $("#btnAddMember").onclick=async()=>{
   const n=$("#newName").value.trim(),r=$("#newRole").value.trim()||"ART",st=$("#newStart").value||null;
   if(!n)return toast("Enter the guardian's name as Last, First.");
   if(S.roster.some(m=>m.name.toLowerCase()===n.toLowerCase()))return toast("That guardian is already on the roster.");
-  S.roster.push({name:n,role:r,start:st,end:null});await Store.save();
+  S.roster.push({name:n,role:r,start:st,end:null});if(!await sync("setRoster",{roster:S.roster},true))return;
   $("#newName").value="";$("#newRole").value="";
   const tgt=st?REQ.map(c=>fmt(targetFor(c,{start:st,end:null},S.year))).join(" / "):null;
   toast(tgt?`${n} added. ${S.year} targets prorated to ${tgt}.`:`${n} added with full-year targets.`);
@@ -1063,7 +1130,8 @@ $("#btnWipe").onclick=async()=>{
   const n=S.entries.filter(e=>yearOf(e.date)===S.year).length;
   if(!n)return toast(`No entries recorded in ${S.year}.`);
   if(!confirm(`Delete all ${n} entries for ${S.year}? The roster and every other year stay intact. This cannot be undone.`))return;
-  S.entries=S.entries.filter(e=>yearOf(e.date)!==S.year);await Store.save();
+  S.entries=S.entries.filter(e=>yearOf(e.date)!==S.year);
+  if(!await sync("wipeYear",{year:S.year},true))return;
   toast(`${S.year} entries deleted.`);refresh();};
 
 $("#btnSample").onclick=async()=>{
@@ -1078,7 +1146,7 @@ $("#btnSample").onclick=async()=>{
       add.push({id:"e"+Date.now()+Math.random().toString(36).slice(2,8),guardian:m.name,activityId:a.id,
         activity:a.name,cat:a.cat,pts:a.pts,date:d,notes:"Sample entry",
         proof:"",proofName:"",ts:new Date().toISOString()});}});
-  S.entries=S.entries.concat(add);await Store.save();toast(`${add.length} sample entries loaded for ${S.year}.`);refresh();};
+  S.entries=S.entries.concat(add);if(!await sync("addEntries",{entries:add},true))return;toast(`${add.length} sample entries loaded for ${S.year}.`);refresh();};
 
 /* ---------- boot ---------- */
 function refresh(){
@@ -1096,10 +1164,15 @@ function migrate(saved){
   return saved;
 }
 (async function init(){
-  const saved=migrate(await Store.load());
-  if(saved) S={...S,...saved,targets:{...S.targets,...(saved.targets||{})},caps:{...S.caps,...(saved.caps||{})},
-    prorate:saved.prorate!==undefined?saved.prorate:true};
-  if(applyRosterUpdates()) await Store.save();
+  if(API){
+    try{ applyServer(await Store.load()); }
+    catch(e){ banner("Can't reach the tracker database right now. Training can't be recorded until the connection is back — please try again shortly."); }
+  } else {
+    const saved=migrate(await Store.load());
+    if(saved) S={...S,...saved,targets:{...S.targets,...(saved.targets||{})},caps:{...S.caps,...(saved.caps||{})},
+      prorate:saved.prorate!==undefined?saved.prorate:true,year:new Date().getFullYear()};
+    if(applyRosterUpdates()) await sync("local");
+  }
   $("#fDate").valueAsDate=new Date();$("#fDate").max=today();$("#newStart").value=today();
   refresh();
 })();
