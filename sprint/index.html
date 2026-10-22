@@ -174,11 +174,13 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
 (() => {
   // ---------- Settings ----------
   const DEFAULTS = {
-    warmup: 360, sprint: 30, rest: 90, perSet: 4, sets: 2, setRest: 60, cooldown: 300,
+    warmWalk1: 180, warmJog: 120, warmWalk2: 60, sprint: 30, rest: 90, perSet: 4, sets: 2, setRest: 60, cooldown: 300,
     beeps: true, voice: true
   };
   const FIELDS = [
-    { key: 'warmup',   label: 'Warm-up',        hint: 'Before the first sprint',      step: 30, min: 0,  time: true, color: 'warmup' },
+    { key: 'warmWalk1', label: 'Warm-up walk',  hint: 'Part 1: easy walk',            step: 30, min: 0,  time: true, color: 'warmup' },
+    { key: 'warmJog',  label: 'Warm-up jog',    hint: 'Part 2: light jog',            step: 30, min: 0,  time: true, color: 'warmup' },
+    { key: 'warmWalk2', label: 'Warm-up walk',  hint: 'Part 3: walk before sprint 1', step: 30, min: 0,  time: true, color: 'warmup' },
     { key: 'sprint',   label: 'Sprint',         hint: 'Each work interval',           step: 5,  min: 5,  time: true, color: 'sprint' },
     { key: 'rest',     label: 'Rest',           hint: 'Between sprints',              step: 5,  min: 0,  time: true, color: 'rest' },
     { key: 'perSet',   label: 'Sprints per set', hint: 'Sprints in each group',       step: 1,  min: 1,  max: 30 },
@@ -204,9 +206,13 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
 
   // ---------- Build the list of intervals ----------
   function buildPlan(c) {
+    c = Object.assign({}, DEFAULTS, c); // older saved workouts lack newer fields
     const segs = [];
     const total = c.perSet * c.sets;
-    if (c.warmup > 0) segs.push({ type: 'warmup', name: 'Warm-up', dur: c.warmup });
+    // Warm-up: walk, jog, walk
+    [['Walk', c.warmWalk1], ['Jog', c.warmJog], ['Walk', c.warmWalk2]].forEach(([name, dur], i) => {
+      if (dur > 0) segs.push({ type: 'warmup', name, dur, first: !segs.length });
+    });
     let n = 0;
     for (let s = 1; s <= c.sets; s++) {
       for (let i = 1; i <= c.perSet; i++) {
@@ -267,7 +273,7 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
     let t = 0;
     $('plan').innerHTML = plan.map(s => {
       const start = t; t += s.dur;
-      const label = s.type === 'sprint' ? `Sprint ${s.n} of ${s.total}` : s.name;
+      const label = s.type === 'sprint' ? `Sprint ${s.n} of ${s.total}` : s.type === 'warmup' ? `Warm-up ${s.name.toLowerCase()}` : s.name;
       return `<div class="row"><span class="dot" style="background:var(--${s.type})"></span>
         <div class="lbl">${label}</div><span class="num">${fmtLong(s.dur)}</span>
         <span class="t num" style="width:52px;text-align:right">${fmt(start)}</span></div>`;
@@ -351,15 +357,21 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
       speechSynthesis.speak(u);
     } catch {}
   }
+  const spoken = s => {
+    const m = Math.floor(s / 60), r = s % 60, parts = [];
+    if (m) parts.push(`${m} minute${m === 1 ? '' : 's'}`);
+    if (r) parts.push(`${r} second${r === 1 ? '' : 's'}`);
+    return parts.join(' ');
+  };
   function cueStart(seg) {
     if (seg.type === 'sprint') { beep(1320, 0.18); beep(1320, 0.35, 0.22); }
     else if (seg.type === 'rest') beep(660, 0.45);
     else beep(880, 0.4);
     const text = {
-      warmup: `Warm up, ${fmtLong(seg.dur)}`,
+      warmup: `${seg.first ? 'Warm up. ' : ''}${seg.name} for ${spoken(seg.dur)}`,
       sprint: seg.n === seg.total ? 'Last sprint. Go!' : `Sprint ${seg.n} of ${seg.total}. Go!`,
-      rest: seg.setBreak ? `Set break, ${fmtLong(seg.dur)}` : `Rest, ${fmtLong(seg.dur)}`,
-      cooldown: `Cool down, ${fmtLong(seg.dur)}`
+      rest: seg.setBreak ? `Set break, ${spoken(seg.dur)}` : `Rest, ${spoken(seg.dur)}`,
+      cooldown: `Cool down, ${spoken(seg.dur)}`
     }[seg.type];
     say(text);
   }
@@ -375,7 +387,7 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
   // Uses wall-clock end times, so it stays accurate even if the phone throttles the page.
   const R = 45, CIRC = 2 * Math.PI * R;
   $('ring').style.strokeDasharray = CIRC;
-  let plan = [], idx = 0, segEnd = 0, remainingMs = 0, paused = false, running = false, raf = 0, iv = 0, lastBeepSec = null, totalDur = 0;
+  let plan = [], idx = 0, segEnd = 0, remainingMs = 0, paused = false, running = false, raf = 0, iv = 0, lastBeepSec = null, saidTen = false, saidHalf = false, totalDur = 0;
 
   function start() {
     unlockAudio();
@@ -395,7 +407,7 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
     const seg = plan[idx];
     remainingMs = seg.dur * 1000;
     segEnd = performance.now() + remainingMs;
-    lastBeepSec = null;
+    lastBeepSec = null; saidTen = false; saidHalf = false;
     if (!silent) cueStart(seg);
     paint();
   }
@@ -426,12 +438,23 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
       if (idx >= plan.length - 1) { finish(); return; }
       idx++;
       segEnd += plan[idx].dur * 1000;
-      lastBeepSec = null;
+      lastBeepSec = null; saidTen = false; saidHalf = false;
       advanced = true;
     }
     if (advanced) cueStart(plan[idx]);
     remainingMs = segEnd - now;
     const secLeft = Math.ceil(remainingMs / 1000);
+    const seg = plan[idx];
+    // 10 seconds before a sprint: start jogging in.
+    if (!saidTen && plan[idx + 1]?.type === 'sprint' && seg.dur > 12 && remainingMs <= 10000) {
+      saidTen = true;
+      say('10 seconds. Start a light jog.');
+    }
+    // Halfway through every sprint.
+    if (!saidHalf && seg.type === 'sprint' && remainingMs <= seg.dur * 500) {
+      saidHalf = true;
+      say('Halfway!');
+    }
     if (secLeft <= 3 && secLeft >= 1 && secLeft !== lastBeepSec && plan[idx].dur > 3) {
       lastBeepSec = secLeft;
       beep(secLeft === 1 ? 990 : 880, 0.12, 0, 0.45);
@@ -447,7 +470,8 @@ header p{margin:2px 0 18px;color:var(--mute);font-size:14px}
     $('run').style.setProperty('--phase-bg', `var(--${seg.type})`);
     $('runPhase').textContent = seg.type === 'sprint' ? 'Sprint' : seg.name;
     $('runSub').textContent = seg.type === 'sprint' ? `${seg.n} of ${seg.total}`
-      : seg.type === 'rest' ? `${seg.n} of ${seg.total} done${seg.setBreak ? ' · set ' + (plan[idx + 1]?.set ?? '') + ' next' : ''}` : '';
+      : seg.type === 'rest' ? `${seg.n} of ${seg.total} done${seg.setBreak ? ' · set ' + (plan[idx + 1]?.set ?? '') + ' next' : ''}`
+      : seg.type === 'warmup' ? 'Warm-up' : '';
     $('runCount').textContent = `Sprints ${plan.slice(0, idx + 1).filter(s => s.type === 'sprint').length}/${plan.filter(s => s.type === 'sprint').length}`;
     $('runClock').textContent = fmt(Math.ceil(left - 0.001));
     $('ring').style.strokeDashoffset = CIRC * (1 - left / seg.dur);
