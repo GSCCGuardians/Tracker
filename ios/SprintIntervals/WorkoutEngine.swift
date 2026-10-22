@@ -15,6 +15,8 @@ final class WorkoutEngine: ObservableObject {
     private var segmentEnd = Date()
     private var timer: Timer?
     private var lastBeepSecond: Int?
+    private var saidTenSeconds = false
+    private var saidHalfway = false
     private var beeps = true
     private var voice = true
     private let audio = AudioCues()
@@ -88,6 +90,8 @@ final class WorkoutEngine: ObservableObject {
         remaining = TimeInterval(plan[i].duration)
         segmentEnd = Date().addingTimeInterval(remaining)
         lastBeepSecond = nil
+        saidTenSeconds = false
+        saidHalfway = false
         cue(plan[i])
     }
 
@@ -100,10 +104,24 @@ final class WorkoutEngine: ObservableObject {
             index += 1
             segmentEnd = segmentEnd.addingTimeInterval(TimeInterval(plan[index].duration))
             lastBeepSecond = nil
+            saidTenSeconds = false
+            saidHalfway = false
             advanced = true
         }
         if advanced { cue(plan[index]) }
         remaining = segmentEnd.timeIntervalSince(now)
+
+        let seg = plan[index]
+        // 10 seconds before a sprint: start jogging in.
+        if voice, !saidTenSeconds, next?.kind == .sprint, seg.duration > 12, remaining <= 10 {
+            saidTenSeconds = true
+            audio.say("10 seconds. Start a light jog.")
+        }
+        // Halfway through every sprint.
+        if voice, !saidHalfway, seg.kind == .sprint, remaining <= TimeInterval(seg.duration) / 2 {
+            saidHalfway = true
+            audio.say("Halfway!")
+        }
 
         let second = Int(ceil(remaining))
         if beeps, (1...3).contains(second), second != lastBeepSecond, plan[index].duration > 3 {

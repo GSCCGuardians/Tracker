@@ -106,7 +106,8 @@ struct RunView: View {
         switch seg.kind {
         case .sprint: return "\(seg.sprintNumber) of \(seg.totalSprints)"
         case .rest: return "\(seg.sprintNumber) of \(seg.totalSprints) done" + (seg.isSetBreak ? " · set \(seg.set + 1) next" : "")
-        case .warmup, .cooldown: return ""
+        case .warmup: return "Warm-up"
+        case .cooldown: return ""
         }
     }
 

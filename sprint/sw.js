@@ -1,5 +1,5 @@
 // Offline cache so the timer opens without a connection (e.g. at the track).
-const CACHE = 'sprint-v1';
+const CACHE = 'sprint-v2';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

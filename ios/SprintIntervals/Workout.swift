@@ -2,7 +2,9 @@ import Foundation
 
 /// The adjustable parts of a sprint workout. All durations are in seconds.
 struct WorkoutConfig: Codable, Equatable {
-    var warmup = 360
+    var warmupWalk = 180
+    var warmupJog = 120
+    var warmupWalk2 = 60
     var sprint = 30
     var rest = 90
     var sprintsPerSet = 4
@@ -17,7 +19,11 @@ struct WorkoutConfig: Codable, Equatable {
     /// is the normal rest plus `setBreakExtra`.
     func buildPlan() -> [Segment] {
         var plan: [Segment] = []
-        if warmup > 0 { plan.append(Segment(kind: .warmup, duration: warmup)) }
+        // Warm-up: walk, jog, walk
+        for (step, duration) in [("Walk", warmupWalk), ("Jog", warmupJog), ("Walk", warmupWalk2)] where duration > 0 {
+            let isFirst = plan.isEmpty
+            plan.append(Segment(kind: .warmup, duration: duration, step: step, isFirstWarmup: isFirst))
+        }
         var n = 0
         for set in 1...max(sets, 1) {
             for i in 1...max(sprintsPerSet, 1) {
@@ -37,8 +43,29 @@ struct WorkoutConfig: Codable, Equatable {
 
     var totalDuration: Int { buildPlan().reduce(0) { $0 + $1.duration } }
 
+    enum CodingKeys: String, CodingKey {
+        case warmupWalk, warmupJog, warmupWalk2, sprint, rest, sprintsPerSet, sets, setBreakExtra, cooldown
+    }
+
     var summary: String {
         "\(totalSprints) × \(formatLong(sprint)) / \(formatLong(rest)) rest · \(formatClock(totalDuration))"
+    }
+}
+
+extension WorkoutConfig {
+    /// Tolerates settings saved by older versions, which lack newer fields.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let d = WorkoutConfig()
+        warmupWalk = try c.decodeIfPresent(Int.self, forKey: .warmupWalk) ?? d.warmupWalk
+        warmupJog = try c.decodeIfPresent(Int.self, forKey: .warmupJog) ?? d.warmupJog
+        warmupWalk2 = try c.decodeIfPresent(Int.self, forKey: .warmupWalk2) ?? d.warmupWalk2
+        sprint = try c.decodeIfPresent(Int.self, forKey: .sprint) ?? d.sprint
+        rest = try c.decodeIfPresent(Int.self, forKey: .rest) ?? d.rest
+        sprintsPerSet = try c.decodeIfPresent(Int.self, forKey: .sprintsPerSet) ?? d.sprintsPerSet
+        sets = try c.decodeIfPresent(Int.self, forKey: .sets) ?? d.sets
+        setBreakExtra = try c.decodeIfPresent(Int.self, forKey: .setBreakExtra) ?? d.setBreakExtra
+        cooldown = try c.decodeIfPresent(Int.self, forKey: .cooldown) ?? d.cooldown
     }
 }
 
@@ -51,22 +78,31 @@ struct Segment: Equatable {
     var totalSprints = 0
     var set = 0
     var isSetBreak = false
+    /// "Walk" or "Jog" for warm-up parts.
+    var step = ""
+    var isFirstWarmup = false
 
     var title: String {
         switch kind {
-        case .warmup: return "Warm-up"
+        case .warmup: return step.isEmpty ? "Warm-up" : step
         case .sprint: return "Sprint"
         case .rest: return isSetBreak ? "Set Break" : "Rest"
         case .cooldown: return "Cooldown"
         }
     }
 
-    var listTitle: String { kind == .sprint ? "Sprint \(sprintNumber) of \(totalSprints)" : title }
+    var listTitle: String {
+        switch kind {
+        case .sprint: return "Sprint \(sprintNumber) of \(totalSprints)"
+        case .warmup: return "Warm-up \(step.lowercased())"
+        default: return title
+        }
+    }
 
     /// What the voice says when this interval starts.
     var announcement: String {
         switch kind {
-        case .warmup: return "Warm up, \(spokenDuration(duration))"
+        case .warmup: return (isFirstWarmup ? "Warm up. " : "") + "\(step) for \(spokenDuration(duration))"
         case .sprint: return sprintNumber == totalSprints ? "Last sprint. Go!" : "Sprint \(sprintNumber) of \(totalSprints). Go!"
         case .rest: return "\(isSetBreak ? "Set break" : "Rest"), \(spokenDuration(duration))"
         case .cooldown: return "Cool down, \(spokenDuration(duration))"

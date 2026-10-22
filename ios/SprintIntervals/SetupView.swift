@@ -22,8 +22,12 @@ struct SetupView: View {
                 }
 
                 Section("Intervals") {
-                    ValueStepper(title: "Warm-up", subtitle: "Before the first sprint", color: .orange,
-                                 value: $settings.config.warmup, step: 30, range: 0...3600, isTime: true)
+                    ValueStepper(title: "Warm-up walk", subtitle: "Part 1: easy walk", color: .orange,
+                                 value: $settings.config.warmupWalk, step: 30, range: 0...1800, isTime: true)
+                    ValueStepper(title: "Warm-up jog", subtitle: "Part 2: light jog", color: .orange,
+                                 value: $settings.config.warmupJog, step: 30, range: 0...1800, isTime: true)
+                    ValueStepper(title: "Warm-up walk", subtitle: "Part 3: walk before sprint 1", color: .orange,
+                                 value: $settings.config.warmupWalk2, step: 30, range: 0...1800, isTime: true)
                     ValueStepper(title: "Sprint", subtitle: "Each work interval", color: .red,
                                  value: $settings.config.sprint, step: 5, range: 5...600, isTime: true)
                     ValueStepper(title: "Rest", subtitle: "Between sprints", color: .green,
