@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
 <title>Guardian Training Record - Good Shepherd Catholic Community</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,8 +47,13 @@ a{color:var(--blue)}
 .mast-in{max-width:1240px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .mast-t{font-family:"Barlow Semi Condensed",sans-serif;font-size:20px;font-weight:600;line-height:1.1;letter-spacing:.06em;text-transform:uppercase}
 .mast-s{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8FAEC2;margin-top:2px}
-.mast-yr{margin-left:auto;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#8FAEC2;display:flex;align-items:center;gap:8px}
+.mast-r{margin-left:auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.mast-yr{white-space:nowrap;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#8FAEC2;display:flex;align-items:center;gap:8px}
 .mast-yr select{background:#17394F;border:1px solid #2C536C;color:#E8F1F6;border-radius:var(--r);padding:5px 8px;font-size:12px;letter-spacing:0}
+.mast-user{font-size:12.5px;color:#C9DBE6;display:flex;align-items:center;gap:10px}
+.mast-user b{color:#fff;font-weight:600}
+.mast-btn{background:none;border:1px solid #2C536C;color:#E8F1F6;border-radius:var(--r);padding:4px 10px;font-size:12px;cursor:pointer}
+.mast-btn:hover{background:#17394F}
 nav.tabs{background:#123853;border-bottom:1px solid #1D4A67}
 .tabs-in{max-width:1240px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto}
 .tab{background:none;border:0;border-bottom:3px solid transparent;color:#8FAEC2;padding:11px 16px;cursor:pointer;font-size:13.5px;font-weight:600;white-space:nowrap}
@@ -69,10 +75,13 @@ nav.tabs{background:#123853;border-bottom:1px solid #1D4A67}
 
 .field{margin-bottom:14px}
 label{display:block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--slate);margin-bottom:5px}
-input[type=text],input[type=date],input[type=url],input[type=password],select,textarea{
+label.check{display:flex;align-items:flex-start;gap:9px;text-transform:none;letter-spacing:0;font-size:13.5px;font-weight:500;color:var(--ink);cursor:pointer}
+label.check input{margin-top:3px;width:16px;height:16px;flex:none}
+input[type=text],input[type=email],input[type=date],input[type=url],input[type=password],select,textarea{
   width:100%;padding:9px 10px;border:1px solid #B9C8D2;border-radius:var(--r);background:#fff}
 input[type=date]{min-height:38px}
 select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0h10L5 6z' fill='%2348606F'/></svg>");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+select:disabled{background-color:#F3F7F9;color:var(--ink);opacity:1;background-image:none}
 textarea{min-height:62px;resize:vertical}
 .hint{font-size:12px;color:var(--mute);margin-top:4px}
 .hint.warn{color:var(--warn);font-weight:600}
@@ -87,6 +96,8 @@ textarea{min-height:62px;resize:vertical}
 .btn.sm{padding:6px 11px;font-size:12.5px}
 .btn.danger{background:#fff;color:var(--alert);border-color:#E0C0C0}
 .btn.danger:hover{background:#FBF1F1}
+.btn.block{width:100%}
+.linkbtn{background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;cursor:pointer;font-size:13px}
 
 .preview{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:var(--r);padding:12px 14px;background:#F8FBFC;margin-bottom:14px}
 .preview.set{border-left-color:var(--cyan);background:#F1F9FD}
@@ -137,7 +148,7 @@ td.name{font-weight:600}
 
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 .toolbar .grow{flex:1 1 180px;min-width:150px}
-.toolbar input[type=text],.toolbar select,.toolbar input[type=date]{padding:7px 10px}
+.toolbar input[type=text],.toolbar input[type=email],.toolbar select,.toolbar input[type=date]{padding:7px 10px}
 
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:var(--navy);color:#fff;padding:11px 20px;border-radius:var(--r);font-size:14px;font-weight:500;box-shadow:0 6px 22px rgba(14,43,65,.3);z-index:90;max-width:min(560px,92vw);text-align:center}
 .empty{padding:34px 20px;text-align:center;color:var(--mute);font-size:14px;background:#fff;border:1px dashed var(--line);border-radius:var(--r)}
@@ -156,8 +167,10 @@ td.name{font-weight:600}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
 .kv dt{color:var(--mute)}
 .kv dd{margin:0;font-weight:600}
-.lock{max-width:400px;margin:40px auto}
+.lock{max-width:420px;margin:40px auto}
+.code-in{font-family:"IBM Plex Mono",monospace;font-size:24px!important;letter-spacing:.35em;text-align:center}
 hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -168,34 +181,74 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
       <div class="mast-t">Guardian Ministry</div>
       <div class="mast-s">Training Record - Good Shepherd Catholic Community</div>
     </div>
-    <div class="mast-yr">
-      <span>Tracking year</span>
-      <select id="yearSel" aria-label="Tracking year"></select>
+    <div class="mast-r">
+      <div class="mast-user" id="mastUser" hidden>
+        <span>Signed in as <b id="mastName"></b></span>
+        <button class="mast-btn" id="btnSignOut" type="button">Sign out</button>
+      </div>
+      <div class="mast-yr" id="mastYear" hidden>
+        <span>Tracking year</span>
+        <select id="yearSel" aria-label="Tracking year"></select>
+      </div>
     </div>
   </div>
 </header>
 
-<nav class="tabs">
+<nav class="tabs" id="nav" hidden>
   <div class="tabs-in" role="tablist">
     <button class="tab" role="tab" data-panel="log" aria-selected="true">Log training</button>
     <button class="tab" role="tab" data-panel="me" aria-selected="false">My record</button>
     <button class="tab" role="tab" data-panel="std" aria-selected="false">Standards</button>
-    <button class="tab" role="tab" data-panel="cmd" aria-selected="false">Command</button>
+    <button class="tab" role="tab" data-panel="cmd" aria-selected="false" id="tabCmd" hidden>Command</button>
   </div>
 </nav>
 
 <main class="wrap">
 <div id="dbBanner" class="note" role="alert" style="display:none;margin-bottom:16px;border-left-color:var(--alert);background:#FBF2F2;color:var(--alert);font-weight:600"></div>
 
-<section class="panel on" id="p-log">
+<section class="panel" id="p-signin">
+  <div class="card lock">
+    <h2>Sign in</h2>
+    <div id="siStep1">
+      <p class="sub">The training record is open to Guardians on the active roster. Enter the email address the ministry has on file for you, and we'll email you a 6-digit code.</p>
+      <div class="field">
+        <label for="siEmail">Email address</label>
+        <input type="email" id="siEmail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" id="siRemember" checked>
+          <span>Keep me signed in on this device for 30 days</span></label>
+        <div class="hint">On a shared or family device, uncheck this and sign out when you're done.</div>
+      </div>
+      <button class="btn block" id="btnSendCode" type="button">Email me a code</button>
+    </div>
+    <div id="siStep2" hidden>
+      <p class="sub" id="siSent"></p>
+      <div class="field">
+        <label for="siCode">6-digit code</label>
+        <input type="text" id="siCode" class="code-in" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*">
+      </div>
+      <button class="btn block" id="btnVerify" type="button">Sign in</button>
+      <p class="hint" style="margin-top:14px;display:flex;gap:16px;flex-wrap:wrap">
+        <button class="linkbtn" id="btnResend" type="button">Send a new code</button>
+        <button class="linkbtn" id="btnOtherEmail" type="button">Use a different email</button>
+      </p>
+    </div>
+    <hr class="rule">
+    <p class="hint" style="margin:0">No code? Check your spam folder. If it still doesn't come, ask the Guardian Coordinator to confirm the email address on the roster.</p>
+  </div>
+</section>
+
+<section class="panel" id="p-log">
   <div class="cols">
     <div>
       <div class="card">
         <h2>Log a training activity</h2>
-        <p class="sub">Pick your name and what you did. Points fill in automatically.</p>
+        <p class="sub">Choose what you did. Points fill in automatically.</p>
         <div class="field">
           <label for="fGuardian">Guardian</label>
-          <select id="fGuardian"><option value="">Select your name...</option></select>
+          <select id="fGuardian"><option value="">Select a guardian...</option></select>
+          <div class="hint" id="guardianHint"></div>
         </div>
         <div class="field">
           <label for="fActivity">Training activity</label>
@@ -229,8 +282,8 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
       </div>
 
       <div class="card">
-        <h2>Your recent entries</h2>
-        <p class="sub" id="recentSub">Select your name to see what you have logged this year.</p>
+        <h2>Recent entries</h2>
+        <p class="sub" id="recentSub"></p>
         <div id="recentBox"></div>
       </div>
     </div>
@@ -275,9 +328,9 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
   <div class="card">
     <h2>My record</h2>
     <p class="sub">Your full activity log for the selected year, plus prior years on file.</p>
-    <div class="field" style="max-width:340px">
+    <div class="field" style="max-width:340px" id="meField">
       <label for="meGuardian">Guardian</label>
-      <select id="meGuardian"><option value="">Select your name...</option></select>
+      <select id="meGuardian"><option value="">Select a guardian...</option></select>
     </div>
     <div id="meBody"></div>
   </div>
@@ -292,15 +345,7 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
 </section>
 
 <section class="panel" id="p-cmd">
-  <div id="cmdLock" class="card lock">
-    <h2>Coordinator access</h2>
-    <p class="sub">Enter the coordinator code to open the command dashboard.</p>
-    <div class="field"><label for="pin">Access code</label><input type="password" id="pin" autocomplete="off"></div>
-    <button class="btn" id="btnPin">Open dashboard</button>
-    <p class="hint" style="margin-top:12px">The code is checked by the tracker's Google service, not by this page.</p>
-  </div>
-
-  <div id="cmdBody" style="display:none">
+  <div id="cmdBody">
     <div class="kpis" id="kpis"></div>
 
     <div class="card">
@@ -333,15 +378,16 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
 
     <div class="card">
       <h2>Roster</h2>
-      <p class="sub">Add members, set service dates, and retire members. Nothing is erased - retired members keep their record and stay on the years they served.</p>
+      <p class="sub">The roster controls who can sign in. A member can sign in with the email shown here from their service start date through their service end date. Retiring someone ends their access after their last day; their record and every year they served stay on file.</p>
       <div class="toolbar">
         <input type="text" id="newName" class="grow" placeholder="Last, First">
-        <input type="text" id="newRole" style="width:160px" placeholder="Role (e.g. ART)">
+        <input type="text" id="newRole" style="width:150px" placeholder="Role (e.g. ART)">
+        <input type="email" id="newEmail" style="width:230px" placeholder="Email for sign-in">
         <input type="date" id="newStart" style="width:170px" title="Service start date">
         <button class="btn sm" id="btnAddMember">Add guardian</button>
       </div>
       <div id="rosterTable"></div>
-      <p class="hint">Leave a start date blank for members who have served since before the tracking years on file - they are measured against the full annual standard.</p>
+      <p class="hint" id="rosterHint"></p>
     </div>
 
     <div class="card">
@@ -393,11 +439,11 @@ hr.rule{border:0;border-top:1px solid var(--line);margin:20px 0}
    ===================================================================== */
 const CONFIG = {
   // Address of the Google Apps Script web app (Deploy → Manage deployments → Web app URL).
-  // The Command code is checked by that script; it is not stored in this page.
-  apiUrl        : "https://script.google.com/macros/s/AKfycbwOfle1gVBkoke3MacifLdRycEidP98X82YFqI8wKU-S8PY9NdswO2pWIe0KFzBr_mS4Q/exec",
-  // Only used for offline testing when apiUrl is blank (data then stays in this browser).
-  localTestCode : "2026",
-  storageKey    : "gscc-guardian-tracker-v1"
+  // Sign-in, the roster and every record are handled by that script. Nothing private is in this page.
+  // Leave blank only for offline testing: data then stays in this browser, with made-up names.
+  apiUrl     : "https://script.google.com/macros/s/AKfycbwOfle1gVBkoke3MacifLdRycEidP98X82YFqI8wKU-S8PY9NdswO2pWIe0KFzBr_mS4Q/exec",
+  storageKey : "gscc-guardian-tracker-v1",
+  sessionKey : "gscc-guardian-session"
 };
 /* ===================================================================== */
 
@@ -436,44 +482,9 @@ const CATALOG = [
   {id:"d1",cat:"Diocese",name:"Diocese Volunteer Event",pts:2,note:"For example, working the Nolan football game"}
 ];
 
-/* Roster as of the Guardian Team 2026 workbook (Armed Guardian Team sheet), 10/19/2026.
-   [name, role, service start, service end] — null start = served since before records began. */
-const ROSTER = [
-  ["Hesselgrave, Mark","Training Coordinator"],["Perone, John","Team Lead"],["Cochran, Jerry","ART"],
-  ["Johansson, Ronald","Team Lead"],["Buttry, Jimmy","ART"],["Balser, Roger","ART"],["Migliaccio, Ken","ART"],
-  ["Morton, John","ART"],["Sakovich, Peter","Medical Team Lead"],["Falcon, Bruce","ART"],
-  ["Weimholt, Brendan","ART"],["Calhoun, Greg","Team Lead"],["Weisenfels, Louis","ART"],["Lippies, Randy","ART"],
-  ["Bunn, Zac","Team Lead"],["Gustafson, Chris","Team Lead"],["Parten, Luke","ART"],
-  ["Via, Wayne","Team Lead"],["Deichert, Jeff","ART"],["Brieger, John","Team Lead"],["Alegria, David","Team Lead"],
-  ["Deras, Franco","ART"],["Matteson, Ray","ART"],["Stregles, Dwan","ART"],
-  ["Javier, Raymond","ART"],["Johnson, Michael","ART"],["Hawthorne, David","Coordinator"],["Crouch, Jared","ART"],
-  ["Sudduth, James","ART"],["Lopez, David","ART"],["Clower, Toby","ART"],["Treadway, James","ART"],
-  ["Roldan, Pedro","ART"],["Miller, Michael","ART"],["Higgins, Collin","ART"],["Licata, Joe","ART"],
-  ["Nolan, Roger","ART","2022-09-10"],["Rycroft, Zachary","ART","2026-10-07"],["Hamilton, James","ART - LEO","2026-10-10"],
-  ["Bertrand, Carlos","ART",null,"2026-10-19"],["Schultz, Garth","ART",null,"2026-10-19"]
-].map(([name,role,start=null,end=null])=>({name,role,start,end}));
-
-/* Roster changes applied once to data that is already saved (browser or API), so an
-   existing tracker picks up the new list without losing entries. Retire never deletes. */
-const ROSTER_UPDATES = [
-  {id:"2026-10-19-guardian-team-list",
-   add:[{name:"Nolan, Roger",role:"ART",start:"2022-09-10"},
-        {name:"Rycroft, Zachary",role:"ART",start:"2026-10-07"},
-        {name:"Hamilton, James",role:"ART - LEO",start:"2026-10-10"}],
-   retire:[{name:"Bertrand, Carlos",end:"2026-10-19"},{name:"Schultz, Garth",end:"2026-10-19"}]}
-];
-function applyRosterUpdates(){
-  S.rosterApplied=Array.isArray(S.rosterApplied)?S.rosterApplied:[];
-  const find=n=>S.roster.find(m=>m.name.toLowerCase()===n.toLowerCase());
-  let changed=false;
-  ROSTER_UPDATES.forEach(u=>{
-    if(S.rosterApplied.includes(u.id)) return;
-    (u.add||[]).forEach(a=>{ if(!find(a.name)) S.roster.push({name:a.name,role:a.role,start:a.start||null,end:null}); });
-    (u.retire||[]).forEach(r=>{ const m=find(r.name); if(m&&!m.end) m.end=r.end; });
-    S.rosterApplied.push(u.id); changed=true;
-  });
-  return changed;
-}
+/* The roster is NOT kept in this page. This repository is public, so names and
+   emails live only in the Google Sheet and are sent only to signed-in users:
+   members receive their own line; coordinators receive the full roster. */
 
 let S = {
   year: new Date().getFullYear(),
@@ -481,63 +492,76 @@ let S = {
   caps:{"combat-practice":4,"security-half":4},
   enforceCaps:false,
   prorate:true,
-  roster:ROSTER,
+  roster:[],
   entries:[]
 };
-
-/* ---------- storage ----------
-   With apiUrl set, all data lives in the Google Sheet behind the Apps Script.
-   Every change is sent as one small request (add entry, delete entry, update
-   roster, ...) and the script returns the fresh shared data, so two people
-   saving at the same time never overwrite each other. Nothing is kept in the
-   browser in that mode. With apiUrl blank, the app runs in local test mode. */
+let ME=null;            // {name, role, email, admin} for the signed-in person
+let TOKEN=null;         // sign-in pass issued by the data service
+let DB_INIT=true;
 const API=!!CONFIG.apiUrl;
-let ADMIN=null;          // coordinator code, held in memory only after it is verified
-let DB_INIT=true;        // false until the coordinator opens Command the first time
-const Store = {
-  async load(){
-    if(API){
-      const r=await fetch(CONFIG.apiUrl+(CONFIG.apiUrl.includes("?")?"&":"?")+"t="+Date.now());
-      const d=await r.json();
-      if(!d.ok) throw new Error(d.error||"Load failed");
-      return d.data;
+const isAdmin=()=>!!(ME&&ME.admin);
+
+/* ---------- sign-in session (kept on this device) ---------- */
+const Session={
+  load(){
+    for(const st of [()=>localStorage,()=>sessionStorage]){
+      try{ const raw=st().getItem(CONFIG.sessionKey); if(!raw) continue;
+        const s=JSON.parse(raw); if(s&&s.token&&s.expires>Date.now()) return s; st().removeItem(CONFIG.sessionKey);
+      }catch(e){}
     }
-    try{ const raw=localStorage.getItem(CONFIG.storageKey); if(raw) return JSON.parse(raw); }catch(e){}
     return null;
   },
-  async post(action,payload,code){
-    // text/plain keeps this a "simple" request, which Google's servers accept from another website
-    const r=await fetch(CONFIG.apiUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body:JSON.stringify({action,payload,code})});
-    return r.json();
+  save(token,expires,remember){
+    this.clear();
+    try{ (remember?localStorage:sessionStorage).setItem(CONFIG.sessionKey,JSON.stringify({token,expires})); }catch(e){}
+  },
+  clear(){
+    try{localStorage.removeItem(CONFIG.sessionKey);}catch(e){}
+    try{sessionStorage.removeItem(CONFIG.sessionKey);}catch(e){}
   }
 };
+
+/* ---------- talking to the data service ----------
+   Every request is a POST carrying the sign-in pass. text/plain keeps it a
+   "simple" request, which Google's servers accept from another website.
+   The service returns fresh data after every change, so two people saving at
+   the same time never overwrite each other. */
+async function call(action,payload){
+  const r=await fetch(CONFIG.apiUrl,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify({action,payload,token:TOKEN})});
+  return r.json();
+}
 function settingsOf(){return {targets:S.targets,caps:S.caps,enforceCaps:S.enforceCaps,prorate:S.prorate};}
 function applyServer(d){
   DB_INIT=!!d.initialized;
-  if(d.initialized){
-    S.roster=(d.roster||[]).map(m=>({name:m.name,role:m.role||"-",start:m.start||null,end:m.end||null}));
-    const st=d.settings||{};
-    if(st.targets) S.targets={...S.targets,...st.targets};
-    if(st.caps) S.caps={...S.caps,...st.caps};
-    if(st.enforceCaps!==undefined) S.enforceCaps=!!st.enforceCaps;
-    if(st.prorate!==undefined) S.prorate=!!st.prorate;
-  }
+  if(d.me) ME=d.me;
+  S.roster=(d.roster||[]).map(m=>({name:m.name,role:m.role||"-",start:m.start||null,end:m.end||null,email:m.email||""}));
+  const st=d.settings||{};
+  if(st.targets) S.targets={...S.targets,...st.targets};
+  if(st.caps) S.caps={...S.caps,...st.caps};
+  if(st.enforceCaps!==undefined) S.enforceCaps=!!st.enforceCaps;
+  if(st.prorate!==undefined) S.prorate=!!st.prorate;
   S.entries=d.entries||[];
-  banner("");
+  banner(DB_INIT?"":"The tracker hasn't been set up yet. The coordinator needs to run importRoster in the Apps Script editor.");
 }
 function banner(msg){const b=$("#dbBanner");b.textContent=msg;b.style.display=msg?"block":"none";}
 async function reload(){
-  try{ applyServer(await Store.load()); }
-  catch(e){ banner("Can't reach the tracker database right now. Training can't be recorded until the connection is back — please try again shortly."); }
+  if(!API){ refresh(); return; }
+  try{
+    const d=await call("load");
+    if(d.auth===false) return signedOut("Your sign-in has ended. Please sign in again.");
+    if(!d.ok) throw new Error(d.error);
+    applyServer(d.data);
+  }catch(e){ banner("Can't reach the tracker database right now. Training can't be recorded until the connection is back — please try again shortly."); }
   refresh();
 }
 /* Send one change. Returns true when it was saved. On failure the screen is
    reloaded from the shared data so it never shows something that wasn't saved. */
-async function sync(action,payload,admin){
-  if(!API){ try{ localStorage.setItem(CONFIG.storageKey,JSON.stringify(S)); }catch(e){} return true; }
+async function sync(action,payload){
+  if(!API){ try{ localStorage.setItem(CONFIG.storageKey,JSON.stringify({...S,year:undefined})); }catch(e){} return true; }
   try{
-    const d=await Store.post(action,payload,admin?ADMIN:undefined);
+    const d=await call(action,payload);
+    if(d.auth===false){ signedOut("Your sign-in has ended. Please sign in again."); return false; }
     if(!d.ok){ toast(d.error||"That change could not be saved."); await reload(); return false; }
     applyServer(d.data); return true;
   }catch(e){
@@ -565,14 +589,16 @@ const qtrOf=d=>Math.ceil(+String(d).slice(5,7)/3);
 const DAY=86400000;
 const utc=s=>{const[y,m,d]=String(s).split("-").map(Number);return Date.UTC(y,m-1,d);};
 const iso=ms=>new Date(ms).toISOString().slice(0,10);
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
 const pretty=d=>{if(!d)return"-";const[y,m,dd]=String(d).split("-");return `${+m}/${+dd}/${y}`;};
 const shortD=d=>{if(!d)return"";const[y,m,dd]=String(d).split("-");
   return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m-1]+" "+(+dd);};
+const firstName=n=>String(n||"").split(",").pop().trim()||n;
+const EMAIL_RE=/^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/;
 
 function toast(msg){$$(".toast").forEach(t=>t.remove());
-  const el=document.createElement("div");el.className="toast";el.textContent=msg;
-  document.body.appendChild(el);setTimeout(()=>el.remove(),3600);}
+  const el=document.createElement("div");el.className="toast";el.textContent=msg;el.setAttribute("role","status");
+  document.body.appendChild(el);setTimeout(()=>el.remove(),4200);}
 
 /* ---------- service window & proration ---------- */
 function service(m,year){
@@ -600,7 +626,8 @@ function serviceLabel(m,year){
 }
 const memberOf=n=>S.roster.find(m=>m.name===n)||{name:n,role:"-",start:null,end:null};
 const servedIn=year=>S.roster.filter(m=>service(m,year).served);
-const isCurrent=m=>!m.end;
+const isCurrent=m=>!m.end||m.end>=today();
+const canSignIn=m=>!!m.email&&(!m.start||m.start<=today())&&isCurrent(m);
 
 /* ---------- scoring ---------- */
 function scoreGuardian(name,year){
@@ -662,17 +689,24 @@ function paintShield(name){
 }
 
 /* ---------- selects & form ---------- */
+/* Members see only themselves. Coordinators can pick anyone (to log on someone's
+   behalf or look up a record); the data service enforces the same rule. */
 function fillSelects(){
-  const served=servedIn(S.year);
-  const allNames=served.map(m=>m.name).sort((a,b)=>a.localeCompare(b));
-  /* Retired members are hidden from Log training; My record still lists them so they can view their history. */
-  const activeNames=served.filter(isCurrent).map(m=>m.name).sort((a,b)=>a.localeCompare(b));
-  [["#fGuardian",activeNames],["#meGuardian",allNames]].forEach(([sel,names])=>{
+  const admin=isAdmin(), served=servedIn(S.year);
+  const pool=admin?served:served.filter(m=>ME&&m.name===ME.name);
+  const sortN=a=>a.map(m=>m.name).sort((x,y)=>x.localeCompare(y));
+  const logNames=sortN(pool.filter(isCurrent)), meNames=sortN(pool);
+  [["#fGuardian",logNames],["#meGuardian",meNames]].forEach(([sel,names])=>{
     const el=$(sel),cur=el.value;
-    el.innerHTML=`<option value="">Select your name...</option>`+names.map(n=>{
-      const m=memberOf(n); return `<option>${esc(n)}</option>`;}).join("");
+    const empty=names.length?(admin?"Select a guardian...":"")
+      :(ME?`Not on the active roster in ${S.year}`:"Select a guardian...");
+    el.innerHTML=(empty?`<option value="">${esc(empty)}</option>`:"")+names.map(n=>`<option>${esc(n)}</option>`).join("");
     if(names.includes(cur)) el.value=cur;
+    else if(ME&&names.includes(ME.name)) el.value=ME.name;
+    else el.value=names.length&&!admin?names[0]:"";
+    el.disabled=!admin;
   });
+  $("#guardianHint").textContent=admin?"As a coordinator you can record training for any active guardian.":"";
   const act=$("#fActivity"),cur=act.value;
   act.innerHTML=`<option value="">Select an activity...</option>`+ORDER.map(c=>
     `<optgroup label="${CATS[c].label}${CATS[c].required?"":" (bonus)"}">`+
@@ -681,7 +715,7 @@ function fillSelects(){
   act.value=cur;
   const ys=$("#yearSel");
   ys.innerHTML=yearsOnFile().map(y=>`<option ${y===S.year?"selected":""}>${y}</option>`).join("");
-  $("#wipeYr") && ($("#wipeYr").textContent=S.year);
+  $("#wipeYr").textContent=S.year;
 }
 
 function renderPreview(){
@@ -699,7 +733,7 @@ function renderPreview(){
     if(a.cap&&g){
       const s=scoreGuardian(g);
       const usedPts=s.rows.filter(r=>{const x=item(r.activityId);return x&&x.cap===a.cap;}).reduce((t,r)=>t+r.pts,0);
-      extra=` You have used ${fmt(usedPts)} of the ${S.caps[a.cap]}-point annual cap in this group.`;
+      extra=` ${g===(ME&&ME.name)?"You have":g+" has"} used ${fmt(usedPts)} of the ${S.caps[a.cap]}-point annual cap in this group.`;
     }
     $("#pvNote").textContent=a.note+"."+extra;
   }
@@ -718,10 +752,10 @@ function renderPreview(){
 
 function renderRecent(){
   const n=$("#fGuardian").value,box=$("#recentBox");
-  if(!n){$("#recentSub").textContent="Select your name to see what you have logged this year.";box.innerHTML="";return;}
+  if(!n){$("#recentSub").textContent=isAdmin()?"Select a guardian to see what they have logged this year.":`Nothing to show for ${S.year}.`;box.innerHTML="";return;}
   const s=scoreGuardian(n);
-  $("#recentSub").textContent=`${s.count} ${s.count===1?"entry":"entries"} in ${S.year} - ${fmt(s.total)} points counted.`;
-  if(!s.count){box.innerHTML=`<div class="empty">Nothing logged for ${S.year} yet. Your first entry starts the record.</div>`;return;}
+  $("#recentSub").textContent=`${n===(ME&&ME.name)?"You have":n+" has"} ${s.count} ${s.count===1?"entry":"entries"} in ${S.year} - ${fmt(s.total)} points counted.`;
+  if(!s.count){box.innerHTML=`<div class="empty">Nothing logged for ${S.year} yet. The first entry starts the record.</div>`;return;}
   box.innerHTML=`<div class="tbl-wrap"><table><thead><tr>
     <th class="nosort">Date</th><th class="nosort">Activity</th><th class="nosort">Category</th>
     <th class="num nosort">Points</th><th class="nosort">Proof</th></tr></thead><tbody>`+
@@ -732,12 +766,14 @@ function renderRecent(){
       <td class="num">${fmt(r.credit)}${r.capped?" *":""}</td>
       <td>${r.proof?`<a href="${esc(r.proof)}" target="_blank" rel="noopener" download="${esc(r.proofName||"")}">View</a>`:`<span class="dim">-</span>`}</td>
     </tr>`).join("")+`</tbody></table></div>`+
-    (s.rows.some(r=>r.capped)?`<p class="hint">* Points beyond the annual cap are recorded but not counted toward your total.</p>`:"");
+    (s.rows.some(r=>r.capped)?`<p class="hint">* Points beyond the annual cap are recorded but not counted toward the total.</p>`:"");
 }
 
 function renderMe(){
   const n=$("#meGuardian").value;
-  $("#meBody").innerHTML=n?guardianDetailHTML(scoreGuardian(n),false):`<div class="empty">Select your name to see your record.</div>`;
+  $("#meField").hidden=!isAdmin();
+  $("#meBody").innerHTML=n?guardianDetailHTML(scoreGuardian(n),false)
+    :`<div class="empty">${isAdmin()?"Select a guardian to see their record.":`You weren't on the roster in ${S.year}.`}</div>`;
 }
 
 function yearHistoryHTML(name){
@@ -778,7 +814,7 @@ function guardianDetailHTML(s,admin){
       <td class="num">${fmt(r.pts)}</td><td class="num ${r.capped?'under':''}">${fmt(r.credit)}</td>
       <td>${r.proof?`<a href="${esc(r.proof)}" target="_blank" rel="noopener" download="${esc(r.proofName||"")}">View</a>`:`<span class="dim">-</span>`}</td>
       <td><span class="short" title="${esc(r.notes)}">${esc(r.notes||"-")}</span></td>
-      ${admin?`<td><button class="btn ghost sm" data-del="${r.id}">Delete</button></td>`:''}
+      ${admin?`<td><button class="btn ghost sm" data-del="${esc(r.id)}">Delete</button></td>`:''}
     </tr>`).join("")+`</tbody></table></div>`
     :`<div class="empty">No entries recorded for ${s.year}.</div>`;
 
@@ -882,14 +918,17 @@ function renderCommand(){
   $("#logSub").textContent=`${log.length} ${log.length===1?"entry":"entries"} recorded in ${S.year}.`;
   $("#logTable").innerHTML=log.length?`<div class="tbl-wrap"><table><thead><tr>
     <th class="nosort">Date</th><th class="nosort">Guardian</th><th class="nosort">Activity</th><th class="nosort">Category</th>
-    <th class="num nosort">Points</th><th class="nosort">Proof</th><th class="nosort">Details</th><th class="nosort"></th></tr></thead><tbody>`+
-    log.map(e=>`<tr><td class="mono">${pretty(e.date)}</td><td class="name">${esc(e.guardian)}</td>
+    <th class="num nosort">Points</th><th class="nosort">Proof</th><th class="nosort">Details</th><th class="nosort">Recorded by</th><th class="nosort"></th></tr></thead><tbody>`+
+    log.map(e=>{const by=e.by?S.roster.find(m=>m.email===e.by):null;
+      const byLabel=!e.by?"-":by?(by.name===e.guardian?"Self":by.name):e.by;
+      return `<tr><td class="mono">${pretty(e.date)}</td><td class="name">${esc(e.guardian)}</td>
       <td><span class="short" title="${esc(e.activity)}">${esc(e.activity)}</span></td>
       <td style="color:${CATS[e.cat]?CATS[e.cat].color:"var(--slate)"};font-weight:600">${CATS[e.cat]?CATS[e.cat].short:esc(e.cat)}</td>
       <td class="num">${fmt(e.pts)}</td>
       <td>${e.proof?`<a href="${esc(e.proof)}" target="_blank" rel="noopener" download="${esc(e.proofName||"")}">View</a>`:`<span class="dim">-</span>`}</td>
       <td><span class="short" title="${esc(e.notes)}">${esc(e.notes||"-")}</span></td>
-      <td><button class="btn ghost sm" data-del="${e.id}">Delete</button></td></tr>`).join("")+
+      <td class="${byLabel==="Self"?"dim":""}">${esc(byLabel)}</td>
+      <td><button class="btn ghost sm" data-del="${esc(e.id)}">Delete</button></td></tr>`;}).join("")+
     `</tbody></table></div>`:`<div class="empty">No training recorded for ${S.year} yet.</div>`;
 
   $("#tC").value=S.targets.Combat;$("#tS").value=S.targets.Security;$("#tP").value=S.targets.Spiritual;
@@ -900,24 +939,33 @@ function renderCommand(){
 
 function renderRoster(){
   const sorted=S.roster.map((m,i)=>({m,i}))
-    .sort((a,b)=>(isCurrent(a.m)===isCurrent(b.m)?a.m.name.localeCompare(b.m.name):(isCurrent(a.m)?-1:1)));
+    .sort((a,b)=>(!a.m.end===!b.m.end?a.m.name.localeCompare(b.m.name):(a.m.end?1:-1)));
   const entryCount=n=>S.entries.filter(e=>e.guardian===n).length;
+  const access=m=>m.end?`<span class="pill past">${m.end<today()?"Retired":"Last day"} ${shortD(m.end)} ${yearOf(m.end)}</span>`
+    :canSignIn(m)?`<span class="pill ok">Can sign in</span>`
+    :!m.email?`<span class="pill flag">No email</span>`
+    :`<span class="pill part">Starts ${pretty(m.start)}</span>`;
   $("#rosterTable").innerHTML=`<div class="tbl-wrap"><table><thead><tr>
-    <th class="nosort">Guardian</th><th class="nosort">Role</th><th class="nosort">Service start</th>
-    <th class="nosort">Service end</th><th class="nosort">Status</th><th class="num nosort">Entries</th>
+    <th class="nosort">Guardian</th><th class="nosort">Role</th><th class="nosort">Sign-in email</th><th class="nosort">Service start</th>
+    <th class="nosort">Service end</th><th class="nosort">Access</th><th class="num nosort">Entries</th>
     <th class="nosort">Actions</th></tr></thead><tbody>`+
-    sorted.map(({m,i})=>{const n=entryCount(m.name);return `<tr class="${isCurrent(m)?"":"former"}">
+    sorted.map(({m,i})=>{const n=entryCount(m.name);return `<tr class="${m.end?"former":""}">
       <td class="name">${esc(m.name)}</td>
       <td><input type="text" value="${esc(m.role)}" data-role="${i}" style="width:150px;padding:5px 8px"></td>
+      <td><input type="email" value="${esc(m.email)}" data-email="${i}" style="width:240px;padding:5px 8px" placeholder="Add email"></td>
       <td><input type="date" value="${m.start||""}" data-start="${i}" style="width:160px;padding:5px 8px"></td>
       <td><input type="date" value="${m.end||""}" data-end="${i}" style="width:160px;padding:5px 8px"></td>
-      <td>${isCurrent(m)?`<span class="pill ok">Active</span>`:`<span class="pill past">Retired ${shortD(m.end)} ${yearOf(m.end)}</span>`}</td>
+      <td>${access(m)}</td>
       <td class="num">${n}</td>
-      <td>${isCurrent(m)
+      <td>${!m.end
         ? `<button class="btn ghost sm" data-retire="${i}">Retire</button>`
         : `<button class="btn ghost sm" data-reinstate="${i}">Reinstate</button>`}
         <button class="btn danger sm" data-purge="${i}" ${n?`disabled title="This guardian has ${n} entries on file. Retire them instead so the record is kept."`:``}>Delete</button></td>
     </tr>`;}).join("")+`</tbody></table></div>`;
+  const active=S.roster.filter(m=>!m.end), noEmail=active.filter(m=>!m.email).length;
+  $("#rosterHint").textContent=`${active.filter(canSignIn).length} of ${active.length} current members can sign in today.`+
+    (noEmail?` ${noEmail} ${noEmail===1?"has":"have"} no email on file and can't sign in until one is added.`:"")+
+    " Leave a start date blank for members who have served since before the tracking years on file.";
 }
 
 function openDrawer(name){
@@ -950,18 +998,18 @@ function sheets(){
     return String(r.proof).indexOf("data:")===0?(r.proofName||"Attached file"):r.proof;};
   const eRows=data.flatMap(d=>d.rows.map(r=>[r.date,"Q"+qtrOf(r.date),d.name,d.role,r.activity,
     CATS[r.cat]?CATS[r.cat].label:r.cat,r.pts,r.credit,r.capped?"Yes":"No",
-    r.outside?"Outside service window":"",proofExportValue(r),r.proof?"Provided":"Not provided",r.notes||"",r.ts||""]))
+    r.outside?"Outside service window":"",proofExportValue(r),r.proof?"Provided":"Not provided",r.notes||"",r.ts||"",r.by||""]))
     .sort((a,b)=>String(a[0]).localeCompare(String(b[0]))||String(a[2]).localeCompare(String(b[2])));
   const entries=[["Date","Quarter","Guardian","Role","Activity","Category","Points awarded","Points counted",
-    "Over cap","Flag","Proof","Proof status","Details","Recorded"],...eRows];
+    "Over cap","Flag","Proof","Proof status","Details","Recorded","Recorded by"],...eRows];
 
   const detail=[["Guardian",...ORDER.map(c=>CATS[c].short+" pts"),"Total pts",
     ...ORDER.map(c=>CATS[c].short+" entries"),"Total entries"],
     ...data.map(d=>[d.name,...ORDER.map(c=>d.counted[c]),d.total,
       ...ORDER.map(c=>d.rows.filter(r=>r.cat===c).length),d.count])];
 
-  const roster=[["Guardian","Role","Service start","Service end","Status","Served in "+S.year,"Total entries all years"],
-    ...S.roster.map(m=>[m.name,m.role,m.start||"",m.end||"",m.end?"Retired":"Active",
+  const roster=[["Guardian","Role","Email","Service start","Service end","Status","Served in "+S.year,"Total entries all years"],
+    ...S.roster.map(m=>[m.name,m.role,m.email||"",m.start||"",m.end||"",isCurrent(m)?"Active":"Retired",
       service(m,S.year).served?serviceLabel(m,S.year):"No",
       S.entries.filter(e=>e.guardian===m.name).length])];
 
@@ -971,7 +1019,7 @@ function sheets(){
   yearsOnFile().sort((a,b)=>a-b).forEach(y=>{
     S.roster.forEach(m=>{const sv=service(m,y);const s=scoreGuardian(m.name,y);
       if(!sv.served&&!s.count) return;
-      hist.push([m.name,y,m.end?"Retired":"Active",sv.served?serviceLabel(m,y):"Not on roster",sv.days,
+      hist.push([m.name,y,isCurrent(m)?"Active":"Retired",sv.served?serviceLabel(m,y):"Not on roster",sv.days,
         Math.round(sv.fraction*1000)/1000,...REQ.flatMap(c=>[s.counted[c],s.targets[c]]),
         s.counted.Team,s.counted.Diocese,s.total,s.count,
         !sv.served?"Not on roster":s.met?"Standards met":"Needs review"]);});});
@@ -990,7 +1038,7 @@ function exportData(kind){
   if(kind==="csv"){
     const cell=v=>{const s=String(v??"");return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
     const out=Object.entries(sh).map(([n,r])=>`# ${n}\n`+r.map(row=>row.map(cell).join(",")).join("\n")).join("\n\n");
-    download(new Blob(["\ufeff"+out],{type:"text/csv;charset=utf-8"}),stamp()+".csv");
+    download(new Blob(["﻿"+out],{type:"text/csv;charset=utf-8"}),stamp()+".csv");
     return toast("CSV downloaded.");
   }
   if(typeof XLSX==="undefined") return toast("Spreadsheet library did not load. Use CSV, or check your internet connection.");
@@ -1008,15 +1056,38 @@ function exportData(kind){
       names.map(n=>`<x:ExcelWorksheet><x:Name>${n}</x:Name><x:WorksheetOptions/></x:ExcelWorksheet>`).join("")+
       `</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>`+
       names.map(n=>tbl(sh[n])).join("<br>")+`</body></html>`;
-    download(new Blob(["\ufeff"+html],{type:"application/vnd.ms-excel"}),stamp()+".xls");
+    download(new Blob(["﻿"+html],{type:"application/vnd.ms-excel"}),stamp()+".xls");
     return toast("XLS downloaded.");
   }
 }
 
+/* ---------- screens ---------- */
+function showTab(name){
+  $$(".tab").forEach(x=>x.setAttribute("aria-selected",x.dataset.panel===name));
+  $$(".panel").forEach(p=>p.classList.toggle("on",p.id==="p-"+name));
+}
+function showSignIn(){
+  $("#nav").hidden=true;$("#mastUser").hidden=true;$("#mastYear").hidden=true;
+  $("#siStep1").hidden=false;$("#siStep2").hidden=true;$("#siCode").value="";
+  showTab("signin");
+  setTimeout(()=>$("#siEmail").focus(),0);
+}
+function showApp(){
+  $("#nav").hidden=false;$("#mastYear").hidden=false;
+  $("#mastUser").hidden=!API;$("#mastName").textContent=ME?ME.name:"";
+  $("#tabCmd").hidden=!isAdmin();
+  showTab("log");
+}
+function signedOut(msg){
+  TOKEN=null;ME=null;Session.clear();
+  S.roster=[];S.entries=[];
+  $$(".scrim,.drawer").forEach(x=>x.remove());
+  showSignIn();
+  if(msg) toast(msg);
+}
+
 /* ---------- events ---------- */
-$$(".tab").forEach(t=>t.onclick=()=>{
-  $$(".tab").forEach(x=>x.setAttribute("aria-selected",x===t));
-  $$(".panel").forEach(p=>p.classList.toggle("on",p.id==="p-"+t.dataset.panel));});
+$$(".tab").forEach(t=>t.onclick=()=>{showTab(t.dataset.panel);if(t.dataset.panel==="cmd")renderCommand();});
 
 $("#fGuardian").onchange=()=>{paintShield($("#fGuardian").value);renderRecent();renderPreview();};
 $("#fActivity").onchange=renderPreview;
@@ -1025,12 +1096,11 @@ $("#meGuardian").onchange=renderMe;
 $("#yearSel").onchange=e=>{S.year=+e.target.value;refresh();};
 
 $("#btnClear").onclick=()=>{$("#fActivity").value="";$("#fNotes").value="";$("#fProof").value="";
-  $("#fDate").valueAsDate=new Date();renderPreview();};
-
+  $("#fDate").value=today();renderPreview();};
 
 $("#btnSave").onclick=async()=>{
   const g=$("#fGuardian").value,id=$("#fActivity").value,d=$("#fDate").value;
-  if(!g) return toast("Select your name first.");
+  if(!g) return toast(isAdmin()?"Select a guardian first.":`You aren't on the active roster in ${S.year}.`);
   if(!id) return toast("Select a training activity.");
   if(!d) return toast("Enter the date you completed the training.");
   if(d>today()) return toast("That date is in the future. Enter the date you completed the training.");
@@ -1043,15 +1113,22 @@ $("#btnSave").onclick=async()=>{
     const a=item(id);
     const entry={id:"e"+Date.now()+Math.random().toString(36).slice(2,6),guardian:g,activityId:id,
       activity:a.name,cat:a.cat,pts:a.pts,date:d,notes:$("#fNotes").value.trim(),
-      proof,proofName:file?file.name:"",ts:new Date().toISOString()};
+      proof,proofName:file?file.name:"",ts:new Date().toISOString(),by:ME&&ME.email||""};
     S.entries.push(entry);
     if(!await sync("addEntry",{entry})) return;
   } finally { btn.disabled=false;btn.textContent="Record training"; }
   const a=item(id);
   const s=scoreGuardian(g);
-  toast(`Recorded ${fmt(a.pts)} ${CATS[a.cat].short} point${a.pts===1?"":"s"}. ${CATS[a.cat].required?`${fmt(s.counted[a.cat])} of ${fmt(s.targets[a.cat])} this year.`:`${fmt(s.counted[a.cat])} bonus points this year.`}`);
+  toast(`Recorded ${fmt(a.pts)} ${CATS[a.cat].short} point${a.pts===1?"":"s"}${g===(ME&&ME.name)?"":" for "+g}. ${CATS[a.cat].required?`${fmt(s.counted[a.cat])} of ${fmt(s.targets[a.cat])} this year.`:`${fmt(s.counted[a.cat])} bonus points this year.`}`);
   $("#btnClear").click();refresh();
 };
+
+/* Roster changes are sent as the whole roster; the data service checks them. */
+async function saveRoster(okMsg){
+  if(!await sync("setRoster",{roster:S.roster})) return false;
+  if(okMsg) toast(okMsg);
+  refresh(); return true;
+}
 
 document.addEventListener("click",async e=>{
   const th=e.target.closest("th[data-sort]");
@@ -1061,78 +1138,67 @@ document.addEventListener("click",async e=>{
   const del=e.target.closest("[data-del]");
   if(del){if(!confirm("Delete this entry? This cannot be undone."))return;
     const id=del.dataset.del;S.entries=S.entries.filter(x=>x.id!==id);
-    if(!await sync("deleteEntry",{id},true))return;toast("Entry deleted.");
+    if(!await sync("deleteEntry",{id}))return;toast("Entry deleted.");
     $$(".scrim,.drawer").forEach(x=>x.remove());refresh();return;}
   const rt=e.target.closest("[data-retire]");
   if(rt){const m=S.roster[+rt.dataset.retire];
-    const d=prompt(`Last day of service for ${m.name}?\n\nTheir record and every year they served stay on file. Targets for that year are prorated to the days they served.`,today());
+    const d=prompt(`Last day of service for ${m.name}?\n\nThey can sign in through this date. Their record and every year they served stay on file, and targets for that year are prorated to the days they served.`,today());
     if(!d)return; if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return toast("Enter the date as YYYY-MM-DD.");
-    m.end=d;if(!await sync("setRoster",{roster:S.roster},true))return;toast(`${m.name} retired as of ${pretty(d)}. Record retained.`);refresh();return;}
+    m.end=d;await saveRoster(`${m.name} retired as of ${pretty(d)}. Record retained.`);return;}
   const ri=e.target.closest("[data-reinstate]");
-  if(ri){const m=S.roster[+ri.dataset.reinstate];m.end=null;if(!await sync("setRoster",{roster:S.roster},true))return;
-    toast(`${m.name} reinstated.`);refresh();return;}
+  if(ri){const m=S.roster[+ri.dataset.reinstate];m.end=null;
+    await saveRoster(`${m.name} reinstated.${m.email?"":" Add an email so they can sign in."}`);return;}
   const pg=e.target.closest("[data-purge]");
   if(pg&&!pg.disabled){const m=S.roster[+pg.dataset.purge];
     if(!confirm(`Remove ${m.name} from the roster entirely?\n\nThis is only available because they have no training entries on file. Use Retire for anyone with a record.`))return;
-    S.roster.splice(+pg.dataset.purge,1);if(!await sync("setRoster",{roster:S.roster},true))return;toast(`${m.name} removed.`);refresh();return;}
+    S.roster.splice(+pg.dataset.purge,1);await saveRoster(`${m.name} removed.`);return;}
   const ex=e.target.closest("[data-exp]");
   if(ex) exportData(ex.dataset.exp);
 });
 
 document.addEventListener("change",async e=>{
   const t=e.target;
-  if(t.dataset.role!==undefined){S.roster[+t.dataset.role].role=t.value.trim()||"-";if(!await sync("setRoster",{roster:S.roster},true))return;refresh();return;}
-  if(t.dataset.start!==undefined){S.roster[+t.dataset.start].start=t.value||null;if(!await sync("setRoster",{roster:S.roster},true))return;
-    toast("Service start updated. Targets recalculated.");refresh();return;}
-  if(t.dataset.end!==undefined){S.roster[+t.dataset.end].end=t.value||null;if(!await sync("setRoster",{roster:S.roster},true))return;
-    toast("Service end updated. Targets recalculated.");refresh();return;}
+  if(t.dataset.role!==undefined){S.roster[+t.dataset.role].role=t.value.trim()||"-";await saveRoster();return;}
+  if(t.dataset.email!==undefined){
+    const v=t.value.trim().toLowerCase(), m=S.roster[+t.dataset.email];
+    if(v&&!EMAIL_RE.test(v)){toast("That email address doesn't look right.");t.value=m.email||"";return;}
+    m.email=v;await saveRoster(v?`${m.name} will sign in with ${v}.`:`Email removed. ${m.name} can no longer sign in.`);return;}
+  if(t.dataset.start!==undefined){S.roster[+t.dataset.start].start=t.value||null;
+    await saveRoster("Service start updated. Targets recalculated.");return;}
+  if(t.dataset.end!==undefined){S.roster[+t.dataset.end].end=t.value||null;
+    await saveRoster("Service end updated. Targets recalculated.");return;}
 });
 
-function openCommand(){$("#pin").value="";$("#cmdLock").style.display="none";$("#cmdBody").style.display="block";renderCommand();}
-$("#btnPin").onclick=async()=>{
-  const code=$("#pin").value.trim();
-  if(!code) return toast("Enter the coordinator code.");
-  if(!API){ if(code===CONFIG.localTestCode) openCommand(); else toast("That code is not recognized."); return; }
-  const btn=$("#btnPin");btn.disabled=true;
-  try{
-    const d=await Store.post("verify",{},code);
-    if(!d.ok) return toast(d.error||"That code is not recognized.");
-    ADMIN=code;
-    if(!DB_INIT){   // first time: save the built-in roster and settings to the shared Sheet
-      if(await sync("init",{roster:S.roster,settings:settingsOf()},true)) toast("Tracker database set up with the current roster.");
-    }
-    openCommand();
-  }catch(e){ toast("Could not reach the tracker database. Check your connection and try again."); }
-  finally{ btn.disabled=false; }
-};
-$("#pin").onkeydown=e=>{if(e.key==="Enter")$("#btnPin").click();};
 $("#cmdSearch").oninput=renderCommand;$("#cmdFilter").onchange=renderCommand;
 
 $$("[data-target]").forEach(el=>el.onchange=async()=>{
   const v=parseFloat(el.value);if(isNaN(v)||v<0)return toast("Enter a number of 0 or more.");
-  S.targets[el.dataset.target]=v;if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();});
+  S.targets[el.dataset.target]=v;if(!await sync("setSettings",{settings:settingsOf()}))return;refresh();});
 $$("[data-cap]").forEach(el=>el.onchange=async()=>{
   const v=parseFloat(el.value);if(isNaN(v)||v<0)return toast("Enter a number of 0 or more.");
-  S.caps[el.dataset.cap]=v;if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();});
-$("#enforce").onchange=async e=>{S.enforceCaps=e.target.value==="1";if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();};
-$("#prorate").onchange=async e=>{S.prorate=e.target.value==="1";if(!await sync("setSettings",{settings:settingsOf()},true))return;refresh();};
+  S.caps[el.dataset.cap]=v;if(!await sync("setSettings",{settings:settingsOf()}))return;refresh();});
+$("#enforce").onchange=async e=>{S.enforceCaps=e.target.value==="1";if(!await sync("setSettings",{settings:settingsOf()}))return;refresh();};
+$("#prorate").onchange=async e=>{S.prorate=e.target.value==="1";if(!await sync("setSettings",{settings:settingsOf()}))return;refresh();};
 
 $("#btnAddMember").onclick=async()=>{
   const n=$("#newName").value.trim(),r=$("#newRole").value.trim()||"ART",st=$("#newStart").value||null;
+  const em=$("#newEmail").value.trim().toLowerCase();
   if(!n)return toast("Enter the guardian's name as Last, First.");
+  if(em&&!EMAIL_RE.test(em))return toast("That email address doesn't look right.");
   if(S.roster.some(m=>m.name.toLowerCase()===n.toLowerCase()))return toast("That guardian is already on the roster.");
-  S.roster.push({name:n,role:r,start:st,end:null});if(!await sync("setRoster",{roster:S.roster},true))return;
-  $("#newName").value="";$("#newRole").value="";
+  if(em&&S.roster.some(m=>m.email===em))return toast("Another guardian already uses that email.");
+  S.roster.push({name:n,role:r,start:st,end:null,email:em});
   const tgt=st?REQ.map(c=>fmt(targetFor(c,{start:st,end:null},S.year))).join(" / "):null;
-  toast(tgt?`${n} added. ${S.year} targets prorated to ${tgt}.`:`${n} added with full-year targets.`);
-  refresh();};
+  if(!await saveRoster((tgt?`${n} added. ${S.year} targets prorated to ${tgt}.`:`${n} added with full-year targets.`)+
+    (em?"":" Add an email so they can sign in.")))return;
+  $("#newName").value="";$("#newRole").value="";$("#newEmail").value="";};
 
 $("#btnWipe").onclick=async()=>{
   const n=S.entries.filter(e=>yearOf(e.date)===S.year).length;
   if(!n)return toast(`No entries recorded in ${S.year}.`);
   if(!confirm(`Delete all ${n} entries for ${S.year}? The roster and every other year stay intact. This cannot be undone.`))return;
   S.entries=S.entries.filter(e=>yearOf(e.date)!==S.year);
-  if(!await sync("wipeYear",{year:S.year},true))return;
+  if(!await sync("wipeYear",{year:S.year}))return;
   toast(`${S.year} entries deleted.`);refresh();};
 
 $("#btnSample").onclick=async()=>{
@@ -1147,37 +1213,80 @@ $("#btnSample").onclick=async()=>{
       add.push({id:"e"+Date.now()+Math.random().toString(36).slice(2,8),guardian:m.name,activityId:a.id,
         activity:a.name,cat:a.cat,pts:a.pts,date:d,notes:"Sample entry",
         proof:"",proofName:"",ts:new Date().toISOString()});}});
-  S.entries=S.entries.concat(add);if(!await sync("addEntries",{entries:add},true))return;toast(`${add.length} sample entries loaded for ${S.year}.`);refresh();};
+  S.entries=S.entries.concat(add);if(!await sync("addEntries",{entries:add}))return;toast(`${add.length} sample entries loaded for ${S.year}.`);refresh();};
+
+/* ---------- sign-in events ---------- */
+let siEmail="";
+async function sendCode(){
+  const email=$("#siEmail").value.trim().toLowerCase();
+  if(!EMAIL_RE.test(email)) return toast("Enter the email address the ministry has on file for you.");
+  const btn=$("#btnSendCode"),btn2=$("#btnResend");btn.disabled=btn2.disabled=true;btn.textContent="Sending…";
+  try{
+    const d=await call("requestCode",{email});
+    if(!d.ok) return toast(d.error||"The code could not be sent. Try again shortly.");
+    siEmail=email;banner("");
+    $("#siSent").textContent=d.message;
+    $("#siStep1").hidden=true;$("#siStep2").hidden=false;$("#siCode").value="";$("#siCode").focus();
+  }catch(e){ toast("Could not reach the tracker. Check your connection and try again."); }
+  finally{ btn.disabled=btn2.disabled=false;btn.textContent="Email me a code"; }
+}
+async function verifyCode(){
+  const code=$("#siCode").value.replace(/\D/g,"");
+  if(code.length!==6) return toast("Enter the 6-digit code from the email.");
+  const btn=$("#btnVerify");if(btn.disabled)return;btn.disabled=true;btn.textContent="Signing in…";
+  try{
+    const remember=$("#siRemember").checked;
+    const d=await call("verifyCode",{email:siEmail,code,remember});
+    if(!d.ok){ $("#siCode").select(); return toast(d.error||"That code didn't work."); }
+    TOKEN=d.token;Session.save(d.token,d.expires,remember);
+    S.year=new Date().getFullYear();
+    applyServer(d.data);showApp();refresh();
+    toast(`Welcome, ${firstName(ME.name)}.`);
+  }catch(e){ toast("Could not reach the tracker. Check your connection and try again."); }
+  finally{ btn.disabled=false;btn.textContent="Sign in"; }
+}
+$("#btnSendCode").onclick=sendCode;
+$("#siEmail").onkeydown=e=>{if(e.key==="Enter")sendCode();};
+$("#btnResend").onclick=()=>{$("#siEmail").value=siEmail;sendCode();};
+$("#btnOtherEmail").onclick=()=>{$("#siStep2").hidden=true;$("#siStep1").hidden=false;$("#siEmail").focus();};
+$("#btnVerify").onclick=verifyCode;
+$("#siCode").oninput=e=>{const v=e.target.value.replace(/\D/g,"").slice(0,6);e.target.value=v;if(v.length===6)verifyCode();};
+$("#siCode").onkeydown=e=>{if(e.key==="Enter")verifyCode();};
+$("#btnSignOut").onclick=()=>signedOut("You're signed out.");
 
 /* ---------- boot ---------- */
 function refresh(){
   fillSelects();renderPreview();renderRecent();renderMe();renderStandards();
   paintShield($("#fGuardian").value);
-  if($("#cmdBody").style.display==="block")renderCommand();
+  if(isAdmin())renderCommand();
 }
-function migrate(saved){
-  if(!saved) return null;
-  if(Array.isArray(saved.roster)) saved.roster=saved.roster.map(m=>{
-    if("active" in m && !("end" in m)) return {name:m.name,role:m.role,start:m.start||null,end:m.active?null:today()};
-    return {name:m.name,role:m.role,start:m.start||null,end:m.end||null};});
-  if(Array.isArray(saved.entries)) saved.entries=saved.entries.map(e=>
-    (e.cat==="Team"&&e.activityId==="t2")?{...e,cat:"Diocese",activityId:"d1"}:e);
-  return saved;
+/* Offline test mode only (apiUrl blank): made-up names, data kept in this browser. */
+function localBoot(){
+  ME={name:"Sample, Coordinator",role:"Coordinator",email:"coordinator@example.org",admin:true};
+  S.roster=[["Sample, Coordinator","Coordinator"],["Sample, Alpha","ART"],["Sample, Bravo","Team Lead"],
+    ["Sample, Charlie","ART","2026-07-01"],["Sample, Delta","ART",null,"2026-06-30"]]
+    .map(([name,role,start=null,end=null],i)=>({name,role,start,end,email:`member${i+1}@example.org`}));
+  try{const raw=localStorage.getItem(CONFIG.storageKey);if(raw){const s=JSON.parse(raw);
+    S={...S,...s,year:new Date().getFullYear(),targets:{...S.targets,...(s.targets||{})},caps:{...S.caps,...(s.caps||{})}};
+    S.roster=S.roster.map(m=>({email:"",...m}));}}catch(e){}
 }
 (async function init(){
-  if(API){
-    try{ applyServer(await Store.load()); }
-    catch(e){ banner("Can't reach the tracker database right now. Training can't be recorded until the connection is back — please try again shortly."); }
-  } else {
-    const saved=migrate(await Store.load());
-    if(saved) S={...S,...saved,targets:{...S.targets,...(saved.targets||{})},caps:{...S.caps,...(saved.caps||{})},
-      prorate:saved.prorate!==undefined?saved.prorate:true,year:new Date().getFullYear()};
-    if(applyRosterUpdates()) await sync("local");
+  $("#fDate").value=today();$("#fDate").max=today();$("#newStart").value=today();
+  if(!API){ localBoot(); showApp(); refresh(); return; }
+  const s=Session.load();
+  if(s){
+    TOKEN=s.token;
+    try{
+      const d=await call("load");
+      if(d.ok){ applyServer(d.data); showApp(); refresh(); return; }
+      Session.clear();TOKEN=null;
+      if(d.auth!==false) banner(d.error||"The tracker database returned an error.");
+    }catch(e){
+      banner("Can't reach the tracker database right now. Please try again shortly.");
+    }
   }
-  $("#fDate").valueAsDate=new Date();$("#fDate").max=today();$("#newStart").value=today();
-  refresh();
+  showSignIn();
 })();
 </script>
 </body>
 </html>
-
